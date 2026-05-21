@@ -947,6 +947,31 @@
       font-size: 10px;
       line-height: 1.45;
     }
+    .live-check-btn {
+      border: 1px solid rgba(165,180,252,.26);
+      border-radius: 6px;
+      background: rgba(99,102,241,.16);
+      color: #c7d2fe;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 850;
+      margin-top: 8px;
+      padding: 8px 10px;
+    }
+    .live-check-btn:disabled {
+      cursor: wait;
+      opacity: .62;
+    }
+    .live-result {
+      border-top: 1px solid rgba(255,255,255,.06);
+      color: #cbd5e1;
+      font-size: 11px;
+      line-height: 1.45;
+      margin-top: 10px;
+      padding-top: 10px;
+      word-break: break-word;
+    }
+    .live-result strong { color: #e2e8f0; }
     .toast {
       position: fixed;
       left: 50%;
@@ -1608,6 +1633,8 @@
       <div class="cli-card">
         <div class="cli-title">Web SDK contract</div>
         <div class="cli-copy">The source is enabled on the Web SDK template 2026-05-15. The page grants consent, sets browser user_id to the selected demo UUID, and sends only accepted GA4-style event names.</div>
+        <button class="live-check-btn" onclick="runMeiroLiveCheck(this)">Run live check</button>
+        <div class="live-result" id="meiro-live-result">Live checks run through Netlify Functions. The browser never receives the API token.</div>
         <div class="cli-command">mpcli api GET /api/event-streams<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
         <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
         <div class="cli-command">mpcli api GET /api/event-types<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
@@ -1639,6 +1666,8 @@
       <div class="cli-card">
         <div class="cli-title">Live workspace check</div>
         <div class="cli-copy">Latest validation: SSE Website source is enabled, recent events are arriving, queues are empty, and error stats show 0 errors in the last hour.</div>
+        <button class="live-check-btn" onclick="runMeiroLiveCheck(this)">Run live check</button>
+        <div class="live-result" id="meiro-cli-live-result">Not checked from this browser yet.</div>
         <div class="cli-command">mpcli api GET /api/health/heartbeat<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
       </div>
     </div>
@@ -2164,10 +2193,91 @@
         <div class="cli-card">
           <div class="cli-title">Profile lookup</div>
           <div class="cli-copy">Use search-everywhere to get the live profileId/cacheId, then fetch profile details and audiences for the active demo account.</div>
+          <button class="live-check-btn" onclick="lookupActiveMeiroProfile(this)">Lookup active profile</button>
+          <div class="live-result" id="meiro-profile-live-result">Not checked from this browser yet.</div>
           ${commands.map(renderCliCommand).join("")}
           <div class="cli-note">The browser identifier and payload user_id are intentionally the same UUID for each simulated user.</div>
         </div>
       `;
+    }
+
+    async function fetchMeiroFunction(path) {
+      const response = await fetch(path, { headers: { Accept: "application/json" } });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || data.detail || response.statusText || "Request failed");
+      }
+      return data;
+    }
+
+    function setLiveResult(id, html) {
+      document.querySelectorAll("#" + id).forEach(node => {
+        node.innerHTML = html;
+      });
+    }
+
+    function renderLiveStatus(data) {
+      const source = data.source || {};
+      const dashboard = data.dashboard || {};
+      const queues = data.queues || {};
+      const errors = data.errors || {};
+      return [
+        `<strong>${source.name || "SSE Website"}</strong>: ${source.isEnabled ? "enabled" : "not enabled"}`,
+        `Events last hour: ${dashboard.totalEventsLastHour ?? source.eventCountLastHour ?? "n/a"}`,
+        `Active event types: ${dashboard.activeEventTypesLastHour ?? "n/a"}`,
+        `Pending queues: ${queues.pendingTotal ?? "n/a"}`,
+        `Errors last hour: ${errors.totalErrorsLastHour ?? dashboard.errorsLastHour ?? "n/a"}`,
+        `Checked: ${escapeHtml(new Date(data.checkedAt || Date.now()).toLocaleTimeString("en-GB"))}`
+      ].join("<br>");
+    }
+
+    async function runMeiroLiveCheck(button) {
+      const original = button.textContent;
+      button.disabled = true;
+      button.textContent = "Checking...";
+      setLiveResult("meiro-live-result", "Calling Netlify Function...");
+      setLiveResult("meiro-cli-live-result", "Calling Netlify Function...");
+      try {
+        const data = await fetchMeiroFunction("/.netlify/functions/meiro-pipes-status");
+        const html = renderLiveStatus(data);
+        setLiveResult("meiro-live-result", html);
+        setLiveResult("meiro-cli-live-result", html);
+        showToast("Live Meiro Pipes check completed.");
+      } catch (err) {
+        const html = `<strong>Live check failed.</strong><br>${escapeHtml(err.message)}<br>Confirm Netlify env vars and redeploy.`;
+        setLiveResult("meiro-live-result", html);
+        setLiveResult("meiro-cli-live-result", html);
+        showToast("Live Meiro check failed.");
+      } finally {
+        button.disabled = false;
+        button.textContent = original;
+      }
+    }
+
+    async function lookupActiveMeiroProfile(button) {
+      const original = button.textContent;
+      const target = currentCustomer ? currentCustomer.id : "";
+      button.disabled = true;
+      button.textContent = "Looking up...";
+      setLiveResult("meiro-profile-live-result", "Searching profile by active browser/user_id...");
+      try {
+        const data = await fetchMeiroFunction(`/.netlify/functions/meiro-profile-search?query=${encodeURIComponent(target)}`);
+        const result = data.results && data.results[0];
+        const matches = result && result.identifierMatches
+          ? result.identifierMatches.map(match => `${escapeHtml(match.identifierTypeName)}=${escapeHtml(match.identifierValue)}`).join("<br>")
+          : "No identifier matches returned.";
+        const html = result
+          ? `<strong>Profile found</strong><br>profileId: ${escapeHtml(result.profileId)}<br>${matches}`
+          : `<strong>No profile found.</strong><br>${escapeHtml(target)}`;
+        setLiveResult("meiro-profile-live-result", html);
+        showToast(result ? "Live profile lookup completed." : "No live profile found.");
+      } catch (err) {
+        setLiveResult("meiro-profile-live-result", `<strong>Profile lookup failed.</strong><br>${escapeHtml(err.message)}`);
+        showToast("Live profile lookup failed.");
+      } finally {
+        button.disabled = false;
+        button.textContent = original;
+      }
     }
 
     function copyMeiroCommandFrom(button) {
