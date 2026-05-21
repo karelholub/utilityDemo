@@ -1623,7 +1623,7 @@
     const originalTextNodes = new WeakMap();
     const originalAttrs = new WeakMap();
 
-    const en = {
+    const sseEnglishTranslations = {
       "Domacnosti": "Households",
       "Podnikatelia a organizacie": "Businesses and organizations",
       "Velkoodberatelia": "Large customers",
@@ -1833,7 +1833,7 @@
 
     function translateText(text) {
       if (currentLang === "sk") return text;
-      return en[text] || text;
+      return sseEnglishTranslations[text] || text;
     }
 
     function setLanguage(lang) {
@@ -1874,7 +1874,7 @@
           if (!el.hasAttribute(attr)) return;
           if (!stored[attr]) stored[attr] = el.getAttribute(attr);
           const original = stored[attr];
-          el.setAttribute(attr, currentLang === "sk" ? original : (attrTranslations[original] || en[original] || original));
+          el.setAttribute(attr, currentLang === "sk" ? original : (attrTranslations[original] || sseEnglishTranslations[original] || original));
         });
         originalAttrs.set(el, stored);
       });
