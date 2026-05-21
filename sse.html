@@ -896,6 +896,57 @@
     }
     .profile-key { color: #64748b; }
     .profile-val { color: #e2e8f0; text-align: right; font-weight: 650; }
+    .cli-card {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      background: rgba(15,23,42,.52);
+    }
+    .cli-title {
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 850;
+      margin-bottom: 6px;
+    }
+    .cli-copy {
+      color: #94a3b8;
+      font-size: 11px;
+      line-height: 1.45;
+      margin-bottom: 9px;
+    }
+    .cli-command {
+      position: relative;
+      margin-top: 8px;
+      padding: 9px 34px 9px 10px;
+      border: 1px solid rgba(148,163,184,.16);
+      border-radius: 6px;
+      background: #080b12;
+      color: #c4b5fd;
+      font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .cli-copy-btn {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: #111827;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .cli-note {
+      margin-top: 10px;
+      color: #64748b;
+      font-size: 10px;
+      line-height: 1.45;
+    }
     .toast {
       position: fixed;
       left: 50%;
@@ -1526,20 +1577,70 @@
       <button class="m-tab active" onclick="switchMTab('events',this)">Events</button>
       <button class="m-tab" onclick="switchMTab('profile',this)">Profile</button>
       <button class="m-tab" onclick="switchMTab('setup',this)">Setup</button>
+      <button class="m-tab" onclick="switchMTab('cli',this)">CLI</button>
     </div>
     <div class="m-panel active" id="mtab-events">
       <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Latest Meiro Pipes events from website and eZona interactions.</div>
       <div id="events-log"></div>
+      <div class="cli-card">
+        <div class="cli-title">Validate ingestion</div>
+        <div class="cli-copy">Use these after adding your API token to check whether events reached Pipes and whether queues are moving.</div>
+        <div class="cli-command">export MPCLI_URL="https://sse-demo.eu1.pipes.meiro.io"<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">export MPCLI_TOKEN="mpat_..."<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli status<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/dashboard<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/health/queues<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+      </div>
     </div>
     <div class="m-panel" id="mtab-profile">
       <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Demo customer attributes attached after portal login.</div>
       <div id="profile-log"></div>
+      <div id="profile-cli-log"></div>
     </div>
     <div class="m-panel" id="mtab-setup">
       <div class="profile-row"><span class="profile-key">SDK</span><span class="profile-val">window.mpt</span></div>
       <div class="profile-row"><span class="profile-key">Endpoint</span><span class="profile-val">/collect/sse-website</span></div>
+      <div class="profile-row"><span class="profile-key">Source ID</span><span class="profile-val">1f737c6b...</span></div>
+      <div class="profile-row"><span class="profile-key">Origin</span><span class="profile-val">utilitydemo.netlify.app</span></div>
       <div class="profile-row"><span class="profile-key">Consent</span><span class="profile-val">granted</span></div>
       <div class="profile-row"><span class="profile-key">Workspace</span><span class="profile-val">sse-demo.eu1</span></div>
+      <div class="profile-row"><span class="profile-key">Last CLI check</span><span class="profile-val">auth ok, queues clear</span></div>
+      <div class="cli-card">
+        <div class="cli-title">Web SDK contract</div>
+        <div class="cli-copy">The source is enabled on the Web SDK template 2026-05-15. The page grants consent, sets browser user_id to the selected demo UUID, and sends only accepted GA4-style event names.</div>
+        <div class="cli-command">mpcli api GET /api/event-streams<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/event-types<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4/tracking-rules<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-note">If events are missing, confirm the source slug, source status, event types, tracking rules, queues, and URL allowlist for the Netlify origin.</div>
+      </div>
+    </div>
+    <div class="m-panel" id="mtab-cli">
+      <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Meiro Pipes CLI quickstart for this demo. Keep tokens in environment variables and never paste real token values into the page.</div>
+      <div class="cli-card">
+        <div class="cli-title">Connect to workspace</div>
+        <div class="cli-command">export MPCLI_URL="https://sse-demo.eu1.pipes.meiro.io"<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">export MPCLI_TOKEN="mpat_..."<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli status<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+      </div>
+      <div class="cli-card">
+        <div class="cli-title">Inspect delivery and errors</div>
+        <div class="cli-command">mpcli api GET /api/event-deliveries<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/profile-deliveries<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/error-stats<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/error-logs<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+      </div>
+      <div class="cli-card">
+        <div class="cli-title">Tracking rules</div>
+        <div class="cli-copy">Rules can use page, click, formSubmit, input, and dataLayer triggers. Worker code should use sdk.track, sdk.getConfig, sdk.updateConfig, and sdk.resetIdentity.</div>
+        <div class="cli-command">mpcli api GET /tracking-rules/sse-website<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4/tracking-rules<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+      </div>
+      <div class="cli-card">
+        <div class="cli-title">Live workspace check</div>
+        <div class="cli-copy">Latest validation: SSE Website source is enabled, recent events are arriving, queues are empty, and error stats show 0 errors in the last hour.</div>
+        <div class="cli-command">mpcli api GET /api/health/heartbeat<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+      </div>
     </div>
   </aside>
 
@@ -2040,6 +2141,46 @@
       document.getElementById("profile-log").innerHTML = rows.map(([k,v]) => `
         <div class="profile-row"><span class="profile-key">${k}</span><span class="profile-val">${escapeHtml(String(v))}</span></div>
       `).join("");
+      renderProfileCliGuide();
+    }
+
+    function renderCliCommand(command) {
+      return `<div class="cli-command">${escapeHtml(command)}<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>`;
+    }
+
+    function renderProfileCliGuide() {
+      const profileCliLog = document.getElementById("profile-cli-log");
+      if (!profileCliLog) return;
+      const email = currentCustomer ? currentCustomer.email : "customer@example.sk";
+      const userId = currentCustomer ? currentCustomer.id : "eff170a6-a999-48f2-a186-4f25d616f258";
+      const commands = [
+        `mpcli api GET "/api/profiles/search-everywhere?query=${email}"`,
+        `mpcli api GET "/api/profiles/search-everywhere?query=${userId}"`,
+        "mpcli api GET /api/profiles/search-cache/{cacheId}",
+        "mpcli api GET /api/profiles/{profileId}",
+        "mpcli api GET /api/profiles/{profileId}/audiences"
+      ];
+      profileCliLog.innerHTML = `
+        <div class="cli-card">
+          <div class="cli-title">Profile lookup</div>
+          <div class="cli-copy">Use search-everywhere to get the live profileId/cacheId, then fetch profile details and audiences for the active demo account.</div>
+          ${commands.map(renderCliCommand).join("")}
+          <div class="cli-note">The browser identifier and payload user_id are intentionally the same UUID for each simulated user.</div>
+        </div>
+      `;
+    }
+
+    function copyMeiroCommandFrom(button) {
+      const command = (button.parentElement.childNodes[0].nodeValue || "").trim();
+      if (!command) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(command).then(
+          () => showToast("Meiro CLI command copied."),
+          () => showToast(command)
+        );
+      } else {
+        showToast(command);
+      }
     }
 
     function toggleMeiroPanel() {

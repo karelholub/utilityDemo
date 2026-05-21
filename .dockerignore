@@ -1,0 +1,9 @@
+.DS_Store
+.claude/
+.git/
+.gitignore
+__pycache__/
+node_modules/
+npm-debug.log*
+.netlify/
+*.pyc

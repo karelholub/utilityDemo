@@ -1,4 +1,10 @@
 [build]
+  functions = "netlify/functions"
+  publish = "."
+
+[dev]
+  command = "npm run dev"
+  port = 8080
   publish = "."
 
 [[redirects]]

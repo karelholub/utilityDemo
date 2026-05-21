@@ -1,0 +1,11 @@
+{
+  "name": "meiro-utility-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "generate:sap": "node generate_sse_sap_export.mjs"
+  }
+}

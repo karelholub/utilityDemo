@@ -1,0 +1,9 @@
+services:
+  utility-demo:
+    build: .
+    image: meiro-utility-demo:local
+    ports:
+      - "8080:8080"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8080
