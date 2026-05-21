@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StredEnergia | Energia, eZona a sluzby pre zakaznikov</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Meiro Pipes SDK -->
+  <script>
+    window.mpt = window.mpt || function () {
+      (window.mpt.q = window.mpt.q || []).push(Array.prototype.slice.call(arguments));
+    };
+    window.mpt("config", {
+      collection_endpoint: "https://sse-demo.eu1.pipes.meiro.io/collect/sse-website",
+      link_tracking: { enabled: true },
+      tracking_rules: { enabled: true }
+    });
+    window.mpt("consent", {
+      storage_persistence: "granted",
+      user_id: "granted",
+      session_id: "granted"
+    });
+    window.mpt("event", "page_view");
+  </script>
+  <script src="https://sse-demo.eu1.pipes.meiro.io/mpt.js" async></script>
+
+  <style>
+    :root {
+      --blue-950: #06345c;
+      --blue-800: #075f9d;
+      --blue-600: #1489c9;
+      --green-700: #138343;
+      --green-500: #62b947;
+      --lime-100: #eff9e8;
+      --amber: #f2c84b;
+      --ink: #132237;
+      --muted: #65758a;
+      --line: #dce5ee;
+      --surface: #ffffff;
+      --soft: #f4f8fb;
+      --panel: #0d1017;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--soft);
+    }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .top-strip {
+      background: var(--blue-950);
+      color: #d9e9f5;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .top-strip .container,
+    .main-nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .top-links, .nav-links, .utility-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid rgba(255,255,255,.20);
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+    }
+    .lang-switch button {
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #d9e9f5;
+      font-size: 12px;
+      font-weight: 800;
+      min-height: 28px;
+      padding: 0 9px;
+      cursor: pointer;
+    }
+    .lang-switch button.active {
+      background: #fff;
+      color: var(--blue-950);
+    }
+    .top-links a { opacity: .9; cursor: pointer; }
+    .top-links a:hover { opacity: 1; color: #fff; }
+    .top-strip .container { min-height: 40px; }
+
+    .main-nav {
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+    .main-nav .container { min-height: 76px; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 210px;
+      cursor: pointer;
+    }
+    .mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--green-500), var(--blue-800));
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(7,95,157,.25);
+    }
+    .mark:before {
+      content: "";
+      position: absolute;
+      inset: 9px 8px;
+      border-radius: 30px 30px 12px 12px;
+      border: 4px solid rgba(255,255,255,.92);
+      border-bottom-color: transparent;
+      transform: rotate(-20deg);
+    }
+    .brand-title { font-size: 22px; font-weight: 800; letter-spacing: 0; color: var(--blue-950); }
+    .brand-sub { font-size: 11px; font-weight: 700; color: var(--green-700); text-transform: uppercase; letter-spacing: .08em; }
+    .nav-links { gap: 6px; }
+    .nav-links a {
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #34475c;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .nav-links a:hover { background: #eef6fc; color: var(--blue-800); }
+    .btn {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 8px;
+      font-weight: 750;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-700), var(--green-500));
+      color: white;
+      box-shadow: 0 12px 24px rgba(19,131,67,.22);
+    }
+    .btn-blue {
+      background: var(--blue-800);
+      color: white;
+      box-shadow: 0 12px 24px rgba(7,95,157,.20);
+    }
+    .btn-outline {
+      background: #fff;
+      color: var(--blue-800);
+      border: 1.5px solid #b6d7ee;
+    }
+    .btn-quiet {
+      background: #edf5fb;
+      color: var(--blue-800);
+      box-shadow: none;
+    }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--blue-950);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+      color: #fff;
+      background:
+        linear-gradient(90deg, rgba(6,52,92,.93), rgba(6,52,92,.76) 45%, rgba(6,52,92,.08)),
+        url("https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1800&q=82") center/cover;
+    }
+    .hero .container {
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: minmax(0, 620px) minmax(300px, 1fr);
+      gap: 40px;
+      align-items: center;
+      padding: 54px 0 78px;
+    }
+    .segment-switch {
+      display: inline-flex;
+      padding: 4px;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .segment-switch button {
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 15px;
+      color: rgba(255,255,255,.82);
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .segment-switch button.active {
+      background: #fff;
+      color: var(--blue-950);
+    }
+    .eyebrow {
+      color: #c6f2b8;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: .98;
+      letter-spacing: 0;
+      max-width: 720px;
+    }
+    .hero-copy {
+      font-size: 18px;
+      line-height: 1.65;
+      color: rgba(255,255,255,.83);
+      max-width: 600px;
+      margin: 22px 0 30px;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .hero-proof {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 590px;
+    }
+    .proof-tile {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      padding: 15px;
+      backdrop-filter: blur(12px);
+    }
+    .proof-value { font-size: 24px; font-weight: 800; }
+    .proof-label { font-size: 12px; color: rgba(255,255,255,.72); margin-top: 4px; line-height: 1.35; }
+
+    .hero-panel {
+      justify-self: end;
+      width: min(420px, 100%);
+      background: rgba(255,255,255,.94);
+      color: var(--ink);
+      border-radius: 8px;
+      box-shadow: 0 24px 80px rgba(6,52,92,.30);
+      border: 1px solid rgba(255,255,255,.56);
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 20px;
+      background: linear-gradient(135deg, #eef8ed, #eef7ff);
+      border-bottom: 1px solid var(--line);
+    }
+    .panel-title { font-size: 18px; font-weight: 800; color: var(--blue-950); }
+    .panel-sub { margin-top: 5px; font-size: 13px; color: var(--muted); line-height: 1.45; }
+    .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); }
+    .quick-card {
+      min-height: 114px;
+      padding: 17px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .quick-card:hover { background: #f7fbff; }
+    .quick-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--lime-100);
+      color: var(--green-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+    .quick-name { font-size: 14px; font-weight: 800; color: var(--blue-950); }
+    .quick-desc { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.4; }
+
+    .support-band {
+      margin-top: -42px;
+      position: relative;
+      z-index: 5;
+    }
+    .support-shell {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 42px rgba(6,52,92,.12);
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      overflow: hidden;
+    }
+    .support-primary { padding: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .support-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: #fbfdff;
+    }
+    .support-card strong { color: var(--blue-950); display: block; margin-bottom: 6px; }
+    .support-card p { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .fault-box {
+      background: linear-gradient(135deg, var(--blue-950), var(--blue-800));
+      color: #fff;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+    .fault-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,.14);
+    }
+    .fault-line span { color: rgba(255,255,255,.72); font-size: 13px; }
+    .fault-line strong { font-size: 17px; }
+
+    section { padding: 76px 0; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .section-kicker {
+      color: var(--green-700);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    h2 {
+      margin: 0;
+      color: var(--blue-950);
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+    .section-copy {
+      max-width: 560px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 10px 0 0;
+    }
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .service-card, .news-card, .portal-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .service-card { padding: 22px; min-height: 260px; display: flex; flex-direction: column; }
+    .service-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .service-symbol {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #eef8ed;
+      color: var(--green-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .service-card h3, .news-card h3, .portal-card h3 {
+      margin: 0;
+      color: var(--blue-950);
+      font-size: 20px;
+      line-height: 1.25;
+    }
+    .service-card p, .news-card p, .portal-card p {
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 12px 0 18px;
+      font-size: 14px;
+    }
+    .service-card .btn { margin-top: auto; align-self: flex-start; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 750;
+      background: #e8f5ff;
+      color: var(--blue-800);
+    }
+
+    .portal-preview {
+      background: linear-gradient(180deg, #fff 0%, #eef5fa 100%);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .portal-layout {
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(420px, 1.35fr);
+      gap: 44px;
+      align-items: center;
+    }
+    .device {
+      border-radius: 22px;
+      background: #0b1b2e;
+      padding: 12px;
+      box-shadow: 0 34px 80px rgba(6,52,92,.22);
+    }
+    .device-screen {
+      min-height: 520px;
+      border-radius: 12px;
+      background: #f7fafc;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .device-top {
+      background: var(--blue-950);
+      color: #fff;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .portal-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 18px;
+    }
+    .portal-kpi {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .portal-kpi span { display: block; color: var(--muted); font-size: 11px; font-weight: 750; text-transform: uppercase; }
+    .portal-kpi strong { display: block; color: var(--blue-950); font-size: 20px; margin-top: 8px; }
+    .usage-bars {
+      padding: 0 18px 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .usage-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 54px;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .bar-track { height: 10px; background: #e7eef5; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue-600), var(--green-500)); border-radius: inherit; }
+    .bill-list { padding: 0 18px 18px; display: grid; gap: 10px; }
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 13px;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1.35fr .8fr .8fr;
+      gap: 18px;
+    }
+    .news-card img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+    }
+    .news-card.feature img { height: 260px; }
+    .news-body { padding: 20px; }
+    .date { color: var(--green-700); font-size: 12px; font-weight: 800; margin-bottom: 8px; }
+
+    .lead-section {
+      padding-top: 0;
+    }
+    .lead-shell {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 28px;
+      align-items: stretch;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 18px 46px rgba(6,52,92,.08);
+    }
+    .lead-copy {
+      padding: 32px;
+      background:
+        linear-gradient(135deg, rgba(6,52,92,.94), rgba(19,131,67,.72)),
+        url("https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=900&q=80") center/cover;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 420px;
+    }
+    .lead-copy h2 { color: #fff; }
+    .lead-copy p {
+      color: rgba(255,255,255,.78);
+      line-height: 1.65;
+      margin: 14px 0 0;
+    }
+    .lead-form {
+      padding: 32px;
+      display: grid;
+      gap: 16px;
+      align-content: center;
+    }
+    .lead-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .consent-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .consent-row input {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      accent-color: var(--green-700);
+      flex-shrink: 0;
+    }
+
+    .newsletter {
+      padding: 0 0 74px;
+    }
+    .newsletter-shell {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 24px;
+      background: linear-gradient(135deg, var(--green-700), var(--blue-800));
+      color: #fff;
+      border-radius: 8px;
+      padding: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+    .newsletter-shell:after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      right: -90px;
+      top: -90px;
+      border: 40px solid rgba(255,255,255,.08);
+    }
+    .newsletter h2 { color: #fff; font-size: 28px; }
+    .newsletter p { margin: 8px 0 0; color: rgba(255,255,255,.76); }
+    .newsletter-form {
+      display: flex;
+      gap: 10px;
+      min-width: min(440px, 100%);
+      position: relative;
+      z-index: 1;
+    }
+    .newsletter-form input {
+      min-height: 46px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      padding: 0 14px;
+      width: 260px;
+      outline: none;
+    }
+    .newsletter-form input::placeholder { color: rgba(255,255,255,.70); }
+
+    .site-footer {
+      background: #082743;
+      color: #c8d7e5;
+      padding: 46px 0;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, 1fr);
+      gap: 26px;
+    }
+    .site-footer h4 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .site-footer a, .site-footer p {
+      color: #c8d7e5;
+      font-size: 13px;
+      line-height: 1.8;
+      display: block;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .portal-app {
+      display: none;
+      min-height: 100vh;
+      background: #f2f6fa;
+    }
+    .portal-topbar {
+      background: var(--blue-950);
+      color: #fff;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+    }
+    .portal-topbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .portal-shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+      padding: 26px 0 60px;
+    }
+    .portal-sidebar {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      align-self: start;
+      position: sticky;
+      top: 92px;
+    }
+    .portal-nav-btn {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      background: transparent;
+      border-radius: 8px;
+      color: #40556b;
+      font-weight: 750;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      text-align: left;
+    }
+    .portal-nav-btn.active, .portal-nav-btn:hover { background: #eef8ed; color: var(--green-700); }
+    .portal-main { display: grid; gap: 18px; }
+    .portal-section { display: none; }
+    .portal-section.active { display: grid; gap: 18px; }
+    .portal-hero {
+      background: linear-gradient(135deg, #fff, #edf7ff);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .portal-hero h1 {
+      color: var(--blue-950);
+      font-size: 30px;
+      line-height: 1.2;
+    }
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .portal-card { padding: 20px; }
+    .portal-card.compact { min-height: 150px; }
+    .metric { font-size: 30px; font-weight: 800; color: var(--blue-950); margin-top: 8px; }
+    .status-pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #eef8ed;
+      color: var(--green-700);
+    }
+    .table-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .7fr .7fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .table-row:first-child {
+      border-top: 0;
+      background: #f8fbfd;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+    }
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(6,52,92,.94), rgba(19,131,67,.78)),
+        url("https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1800&q=82") center/cover;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      width: min(480px, 100%);
+      background: #fff;
+      border-radius: 8px;
+      padding: 34px;
+      box-shadow: 0 28px 90px rgba(0,0,0,.28);
+    }
+    .persona-list { display: grid; gap: 10px; margin: 18px 0; }
+    .persona-btn {
+      border: 1.5px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .persona-btn.selected { border-color: var(--green-500); background: #f1faed; }
+    .field {
+      display: grid;
+      gap: 7px;
+      margin: 13px 0;
+    }
+    .field label { font-size: 12px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .field input, .field select {
+      min-height: 46px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 0 14px;
+      color: var(--ink);
+      outline: none;
+      background: #fff;
+      width: 100%;
+    }
+    .field input:focus, .field select:focus { border-color: var(--blue-600); }
+
+    .meiro-toggle {
+      position: fixed;
+      right: 0;
+      bottom: 88px;
+      z-index: 9991;
+      border: 0;
+      border-radius: 8px 0 0 8px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      padding: 16px 9px;
+      writing-mode: vertical-rl;
+      cursor: pointer;
+      box-shadow: -6px 0 26px rgba(99,102,241,.25);
+      transition: right .22s ease;
+    }
+    .meiro-toggle.open { right: 380px; }
+    .meiro-panel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 380px;
+      max-width: calc(100vw - 42px);
+      background: var(--panel);
+      color: #e2e8f0;
+      z-index: 9990;
+      transform: translateX(100%);
+      transition: transform .22s ease;
+      border-left: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      flex-direction: column;
+    }
+    .meiro-panel.open { transform: translateX(0); }
+    .meiro-head {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .meiro-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .m-tab {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      color: #64748b;
+      padding: 11px 10px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 12px;
+      border-bottom: 2px solid transparent;
+    }
+    .m-tab.active { color: #a5b4fc; border-bottom-color: #6366f1; }
+    .m-panel {
+      display: none;
+      overflow-y: auto;
+      padding: 14px;
+      flex: 1;
+    }
+    .m-panel.active { display: block; }
+    .event-row, .profile-row {
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 8px 0;
+      font-size: 12px;
+    }
+    .event-name { color: #a5b4fc; font-weight: 800; }
+    .event-sub { color: #94a3b8; margin-top: 3px; line-height: 1.35; word-break: break-word; }
+    .event-time { color: #64748b; font-size: 10px; margin-top: 4px; }
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .profile-key { color: #64748b; }
+    .profile-val { color: #e2e8f0; text-align: right; font-weight: 650; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 120px);
+      background: #0d1017;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 8px;
+      padding: 12px 16px;
+      z-index: 9995;
+      box-shadow: 0 18px 50px rgba(0,0,0,.22);
+      transition: transform .25s ease;
+      font-size: 13px;
+      max-width: min(520px, calc(100vw - 32px));
+    }
+    .toast.show { transform: translate(-50%, 0); }
+
+    @media (max-width: 980px) {
+      .main-nav .container { align-items: flex-start; flex-direction: column; padding: 14px 0; }
+      .nav-links { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+      .hero .container, .portal-layout, .support-shell, .portal-shell { grid-template-columns: 1fr; }
+      .hero-panel { justify-self: stretch; }
+      .hero-proof, .cards-3, .news-grid, .portal-grid, .footer-grid { grid-template-columns: 1fr 1fr; }
+      .portal-sidebar { position: static; display: grid; grid-template-columns: repeat(2,1fr); }
+      .newsletter-shell { grid-template-columns: 1fr; }
+      .lead-shell { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .container { width: min(100% - 24px, 1180px); }
+      .top-strip .container { align-items: flex-start; flex-direction: column; padding: 9px 0; gap: 8px; }
+      .utility-links { width: 100%; justify-content: space-between; }
+      .hero, .hero .container { min-height: auto; }
+      .hero .container { padding: 42px 0 84px; }
+      .hero-proof, .support-primary, .cards-3, .news-grid, .portal-kpis, .portal-grid, .footer-grid { grid-template-columns: 1fr; }
+      .quick-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form input { width: 100%; }
+      .lead-fields { grid-template-columns: 1fr; }
+      .portal-sidebar { grid-template-columns: 1fr; }
+      .table-card { overflow-x: auto; }
+      .table-row { min-width: 760px; }
+      .hero-actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div id="public-site">
+    <div class="top-strip">
+      <div class="container">
+        <div class="top-links">
+          <a onclick="trackEvent('segment_selected',{segment:'domacnosti'})">Domacnosti</a>
+          <a onclick="trackEvent('segment_selected',{segment:'podnikatelia'})">Podnikatelia a organizacie</a>
+          <a onclick="trackEvent('segment_selected',{segment:'velkoodber'})">Velkoodberatelia</a>
+          <a onclick="trackEvent('support_link_clicked',{topic:'faq'})">Najcastejsie otazky</a>
+        </div>
+        <div class="utility-links">
+          <div class="lang-switch" aria-label="Language">
+            <button id="lang-sk" data-lang-button="sk" class="active" onclick="setLanguage('sk')">SK</button>
+            <button id="lang-en" data-lang-button="en" onclick="setLanguage('en')">EN</button>
+          </div>
+          <a onclick="trackEvent('search_opened',{})">Vyhladavanie</a>
+          <a onclick="openLogin()">eZona</a>
+          <button class="btn btn-primary" onclick="openLogin()">Prihlasit sa</button>
+        </div>
+      </div>
+    </div>
+
+    <header class="main-nav">
+      <div class="container">
+        <a class="brand" onclick="showPublicHome()">
+          <div class="mark" aria-hidden="true"></div>
+          <div>
+            <div class="brand-title">StredEnergia</div>
+            <div class="brand-sub">Demo utility portal</div>
+          </div>
+        </a>
+        <nav class="nav-links" aria-label="Hlavna navigacia">
+          <a href="#elektrina" onclick="trackEvent('nav_clicked',{item:'elektrina'})">Elektrina</a>
+          <a href="#plyn" onclick="trackEvent('nav_clicked',{item:'plyn'})">Plyn</a>
+          <a href="#ezona" onclick="trackEvent('nav_clicked',{item:'ezona'})">eZona a E-sluzby</a>
+          <a href="#poradenstvo" onclick="trackEvent('nav_clicked',{item:'poradenstvo'})">Poradenstvo</a>
+          <a href="#podpora" onclick="trackEvent('nav_clicked',{item:'podpora'})">Podpora</a>
+        </nav>
+        <button class="icon-btn" title="Otvorit vyhladavanie" onclick="trackEvent('search_opened',{})">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div>
+            <div class="segment-switch" aria-label="Segment">
+              <button class="active" onclick="setSegment('domacnosti',this)">Domacnosti</button>
+              <button onclick="setSegment('firmy',this)">Firmy</button>
+              <button onclick="setSegment('sprava',this)">Verejna sprava</button>
+            </div>
+            <div class="eyebrow">Energia pre stred Slovenska</div>
+            <h1 id="hero-title">Elektrina, plyn a e-sluzby bez zbytocnych krokov.</h1>
+            <p class="hero-copy" id="hero-copy">Moderny zakaznicky portal pre platby, odpocty, prehlad spotreby a rychlu pomoc pri odstavkach. Navrhnute ako contemporary demo inspirovane utility messagingom SSE.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="trackEvent('tariff_cta_clicked',{product:'electricity_home'});focusLeadForm('tariff_review')">Vybrat produkt</button>
+              <button class="btn btn-outline" onclick="openLogin()">Vstupit do eZony</button>
+            </div>
+            <div class="hero-proof">
+              <div class="proof-tile"><div class="proof-value">24/7</div><div class="proof-label">prehlad faktur, platieb a poziadaviek</div></div>
+              <div class="proof-tile"><div class="proof-value">15 min</div><div class="proof-label">rychly online prepis odberneho miesta</div></div>
+              <div class="proof-tile"><div class="proof-value">0 EUR</div><div class="proof-label">aktivacia vybranych e-sluzieb</div></div>
+            </div>
+          </div>
+
+          <aside class="hero-panel" aria-label="Rychle akcie">
+            <div class="panel-head">
+              <div class="panel-title">Co potrebujete vybavit?</div>
+              <div class="panel-sub">Najcastejsie utility scenare su dostupne priamo z uvodu a merane v Meiro Pipes.</div>
+            </div>
+            <div class="quick-grid">
+              <div class="quick-card" onclick="trackEvent('quick_action_clicked',{action:'report_meter_reading'});openLogin()">
+                <div class="quick-icon">kWh</div>
+                <div class="quick-name">Zadat odpocet</div>
+                <div class="quick-desc">Nahlasenie stavu elektromera alebo plynomera.</div>
+              </div>
+              <div class="quick-card" onclick="trackEvent('quick_action_clicked',{action:'pay_invoice'});openLogin()">
+                <div class="quick-icon">EUR</div>
+                <div class="quick-name">Zaplatit fakturu</div>
+                <div class="quick-desc">Online platba a prehlad salda.</div>
+              </div>
+              <div class="quick-card" onclick="trackEvent('quick_action_clicked',{action:'planned_outages'});scrollToId('podpora')">
+                <div class="quick-icon">!</div>
+                <div class="quick-name">Odstavky</div>
+                <div class="quick-desc">Planovane odstavky a poruchove linky.</div>
+              </div>
+              <div class="quick-card" onclick="trackEvent('quick_action_clicked',{action:'contact_support'});focusLeadForm('contact_support')">
+                <div class="quick-icon">@</div>
+                <div class="quick-name">Kontakt</div>
+                <div class="quick-desc">Zakaznicka podpora pre domacnosti a firmy.</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <div class="support-band" id="podpora">
+        <div class="container">
+          <div class="support-shell">
+            <div class="support-primary">
+              <div class="support-card">
+                <strong>Planovane odstavky</strong>
+                <p>Overte si dopad odstavok podla adresy alebo odberneho miesta.</p>
+                <button class="btn btn-quiet" onclick="trackEvent('outage_lookup_started',{source:'support_band'});focusLeadForm('outage_notification')">Skontrolovat adresu</button>
+              </div>
+              <div class="support-card">
+                <strong>Cenniky a dokumenty</strong>
+                <p>Tarify, obchodne podmienky a poucenia pre odberatela.</p>
+                <button class="btn btn-quiet" onclick="trackEvent('document_download_started',{document:'price_lists'})">Otvorit dokumenty</button>
+              </div>
+            </div>
+            <div class="fault-box">
+              <div>
+                <div class="eyebrow" style="margin:0;color:#b8f0aa;">Poruchove linky</div>
+                <div style="font-size:22px;font-weight:800;">Rychla pomoc podla komodity</div>
+              </div>
+              <div class="fault-line"><span>Elektrina</span><strong>0800 111 567</strong></div>
+              <div class="fault-line"><span>Plyn</span><strong>0850 111 727</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="lead-section" id="registracia">
+        <div class="container">
+          <div class="lead-shell">
+            <div class="lead-copy">
+              <div class="section-kicker" style="color:#b8f0aa;">Novy zakaznik</div>
+              <h2>Chcete zmenit dodavatela energie?</h2>
+              <p>Nechajte nam kontakt a predmet zaujmu. Ozveme sa, pripravime odporucanie a prevedieme vas procesom zmeny dodavatela.</p>
+            </div>
+            <form class="lead-form" id="onboarding-form" onsubmit="submitOnboardingForm(event)">
+              <div class="lead-fields">
+                <div class="field">
+                  <label for="onboarding-first-name">Meno</label>
+                  <input id="onboarding-first-name" name="first_name" autocomplete="given-name" required />
+                </div>
+                <div class="field">
+                  <label for="onboarding-last-name">Priezvisko</label>
+                  <input id="onboarding-last-name" name="last_name" autocomplete="family-name" required />
+                </div>
+                <div class="field">
+                  <label for="onboarding-email">E-mail</label>
+                  <input id="onboarding-email" name="email" type="text" inputmode="email" autocomplete="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" required />
+                </div>
+                <div class="field">
+                  <label for="onboarding-phone">Telefon</label>
+                  <input id="onboarding-phone" name="phone" type="tel" autocomplete="tel" placeholder="+421..." required />
+                </div>
+                <div class="field">
+                  <label for="onboarding-interest">Predmet zaujmu</label>
+                  <select id="onboarding-interest" name="interest">
+                    <option value="change_provider">Chcem zmenit dodavatela</option>
+                    <option value="electricity_contract">Nova zmluva na elektrinu</option>
+                    <option value="gas_contract">Nova zmluva na plyn</option>
+                    <option value="electricity_gas_bundle">Elektrina aj plyn</option>
+                    <option value="business_onboarding">Prechod firmy</option>
+                    <option value="solar_plus_energy">Energia + fotovoltika</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="onboarding-commodity">Komodita</label>
+                  <select id="onboarding-commodity" name="commodity">
+                    <option value="electricity_gas">Elektrina aj plyn</option>
+                    <option value="electricity">Elektrina</option>
+                    <option value="gas">Plyn</option>
+                    <option value="not_sure">Neviem / poradit</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="onboarding-current-provider">Aktualny dodavatel</label>
+                  <input id="onboarding-current-provider" name="current_provider" placeholder="volitelne" />
+                </div>
+                <div class="field">
+                  <label for="onboarding-contact-time">Kedy zavolat?</label>
+                  <select id="onboarding-contact-time" name="contact_time">
+                    <option value="morning">Rano</option>
+                    <option value="afternoon">Popoludni</option>
+                    <option value="evening">Vecer</option>
+                  </select>
+                </div>
+              </div>
+              <label class="consent-row">
+                <input id="onboarding-marketing-consent" name="marketing_consent" type="checkbox" required />
+                <span>Suhlasim s kontaktovanim a so zasielanim marketingovej komunikacie k zvolenej ponuke.</span>
+              </label>
+              <button class="btn btn-primary" type="submit">Poziadat o kontakt</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="elektrina">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">Produkty a sluzby</div>
+              <h2>Energeticke produkty s jasnym dalsim krokom.</h2>
+              <p class="section-copy">Obsah je postaveny na typickom utility journey: vyber komodity, digitalne sluzby, poradenstvo a starostlivost.</p>
+            </div>
+            <button class="btn btn-outline" onclick="trackEvent('product_comparison_clicked',{});focusLeadForm('tariff_review')">Porovnat ponuky</button>
+          </div>
+          <div class="cards-3">
+            <article class="service-card" id="plyn" onclick="trackEvent('product_card_viewed',{product:'electricity_home'})">
+              <div class="service-top">
+                <div class="service-symbol"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-13h-8z"/></svg></div>
+                <span class="tag">Domacnosti</span>
+              </div>
+              <h3>Elektrina pre domacnost</h3>
+              <p>Stabilne dodavky, zalohove platby online a upozornenia na zmeny spotreby.</p>
+              <button class="btn btn-blue" onclick="event.stopPropagation();trackEvent('tariff_cta_clicked',{product:'electricity_home'});focusLeadForm('tariff_review')">Mam zaujem</button>
+            </article>
+            <article class="service-card" onclick="trackEvent('product_card_viewed',{product:'gas_home'})">
+              <div class="service-top">
+                <div class="service-symbol"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A4.5 4.5 0 0 0 13 19a6 6 0 0 0 6-6c0-5-6-8-6-11-4 3-8 7-8 12a8 8 0 0 0 8 8"/></svg></div>
+                <span class="tag">Teplo domova</span>
+              </div>
+              <h3>Plyn pre byvanie</h3>
+              <p>Jednoduche nastavenie preddavkov, historia faktur a odporucania pre sezonu.</p>
+              <button class="btn btn-blue" onclick="event.stopPropagation();trackEvent('tariff_cta_clicked',{product:'gas_home'});focusLeadForm('tariff_review')">Zistit viac</button>
+            </article>
+            <article class="service-card" onclick="trackEvent('product_card_viewed',{product:'energy_services'})">
+              <div class="service-top">
+                <div class="service-symbol"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></div>
+                <span class="tag">Uspory</span>
+              </div>
+              <h3>Energeticke poradenstvo</h3>
+              <p>Fotovoltika, efektivne vykurovanie a odporucania podla spotrebneho profilu.</p>
+              <button class="btn btn-blue" onclick="event.stopPropagation();trackEvent('consultation_started',{topic:'energy_efficiency'});focusLeadForm('heat_pump')">Objednat konzultaciu</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="portal-preview" id="ezona">
+        <div class="container portal-layout">
+          <div>
+            <div class="section-kicker">eZona</div>
+            <h2>Customer portal ako demo prezentacnej aj servisnej vrstvy.</h2>
+            <p class="section-copy">Portal obsahuje prihlasenie, demo persony, spotrebu, faktury, odpocty, poziadavky a servisne nudges. Kazdy krok posiela udalost cez rovnaky Meiro Pipes SDK pattern ako existujuce demos.</p>
+            <div class="hero-actions" style="margin-top:26px;">
+              <button class="btn btn-primary" onclick="openLogin()">Otvorit eZonu</button>
+              <button class="btn btn-outline" onclick="trackEvent('portal_demo_tour_clicked',{});focusLeadForm('tariff_review')">Spustit tour</button>
+            </div>
+          </div>
+          <div class="device" aria-label="Nahlad portalu">
+            <div class="device-screen">
+              <div class="device-top">
+                <strong>eZona</strong>
+                <span class="status-pill">Aktivne</span>
+              </div>
+              <div class="portal-kpis">
+                <div class="portal-kpi"><span>Saldo</span><strong>0,00 EUR</strong></div>
+                <div class="portal-kpi"><span>Elektrina</span><strong>312 kWh</strong></div>
+                <div class="portal-kpi"><span>Plyn</span><strong>48 m3</strong></div>
+              </div>
+              <div class="usage-bars">
+                <div class="usage-row"><span>Jan</span><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><strong>224</strong></div>
+                <div class="usage-row"><span>Feb</span><div class="bar-track"><div class="bar-fill" style="width:66%"></div></div><strong>248</strong></div>
+                <div class="usage-row"><span>Mar</span><div class="bar-track"><div class="bar-fill" style="width:74%"></div></div><strong>278</strong></div>
+                <div class="usage-row"><span>Apr</span><div class="bar-track"><div class="bar-fill" style="width:52%"></div></div><strong>196</strong></div>
+              </div>
+              <div class="bill-list">
+                <div class="bill-row"><span>Faktura 04/2026</span><strong>Uhradena</strong></div>
+                <div class="bill-row"><span>Planovana odstavka</span><strong>24.05.</strong></div>
+                <div class="bill-row"><span>Dalsi odpocet</span><strong>o 12 dni</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="poradenstvo">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">Aktuality a upozornenia</div>
+              <h2>Utility messaging s priestorom pre personalizaciu.</h2>
+            </div>
+            <button class="btn btn-outline" onclick="trackEvent('news_archive_clicked',{})">Viac aktualit</button>
+          </div>
+          <div class="news-grid">
+            <article class="news-card feature" onclick="trackEvent('article_opened',{article:'solar_damage_warning'})">
+              <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1100&q=80" alt="Solarne panely na streche" />
+              <div class="news-body">
+                <div class="date">29.04.2026</div>
+                <h3>Pozor na skrat alebo poskodenie fotovoltiky pocas burkovej sezony</h3>
+                <p>Preventivne odporucania a rychle kontakty pre servisne situacie.</p>
+              </div>
+            </article>
+            <article class="news-card" onclick="trackEvent('article_opened',{article:'customer_center_moved'})">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80" alt="Zakaznicke centrum" />
+              <div class="news-body">
+                <div class="date">17.04.2026</div>
+                <h3>Zakaznicke centrum sa docasne presuva</h3>
+                <p>Prehlad alternativnych kontaktov a online vybavenia poziadaviek.</p>
+              </div>
+            </article>
+            <article class="news-card" onclick="trackEvent('article_opened',{article:'senior_energy'})">
+              <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80" alt="Poradenstvo pre zakaznikov" />
+              <div class="news-body">
+                <div class="date">01.04.2026</div>
+                <h3>Energeticky special pre domacnosti</h3>
+                <p>Tipy na zalohy, spotrebu a podporu zranitelnych skupin.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="lead-section" id="kontakt">
+        <div class="container">
+          <div class="lead-shell">
+            <div class="lead-copy">
+              <div class="section-kicker" style="color:#b8f0aa;">Kontakt a poradenstvo</div>
+              <h2>Nechajte si pripravit odporucanie pre vase odberne miesto.</h2>
+              <p>Zbierame zakladne zero-party udaje priamo od zakaznika: kontakt, zaujmy a suhlas s marketingovou komunikaciou.</p>
+            </div>
+            <form class="lead-form" id="lead-form" onsubmit="submitLeadForm(event)">
+              <div class="lead-fields">
+                <div class="field">
+                  <label for="lead-first-name">Meno</label>
+                  <input id="lead-first-name" name="first_name" autocomplete="given-name" required />
+                </div>
+                <div class="field">
+                  <label for="lead-last-name">Priezvisko</label>
+                  <input id="lead-last-name" name="last_name" autocomplete="family-name" required />
+                </div>
+                <div class="field">
+                  <label for="lead-email">E-mail</label>
+                  <input id="lead-email" name="email" type="text" inputmode="email" autocomplete="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" required />
+                </div>
+                <div class="field">
+                  <label for="lead-phone">Telefon</label>
+                  <input id="lead-phone" name="phone" type="tel" autocomplete="tel" placeholder="+421..." required />
+                </div>
+                <div class="field">
+                  <label for="lead-interest">Mam zaujem o</label>
+                  <select id="lead-interest" name="interest">
+                    <option value="tariff_review">Kontrolu tarify</option>
+                    <option value="solar">Fotovoltiku</option>
+                    <option value="heat_pump">Tepelne cerpadlo</option>
+                    <option value="business_energy">Firemnu energiu</option>
+                    <option value="outage_notification">Upozornenia na odstavky</option>
+                    <option value="contact_support">Kontakt zakaznickej podpory</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="lead-contact-time">Preferovany cas</label>
+                  <select id="lead-contact-time" name="contact_time">
+                    <option value="morning">Rano</option>
+                    <option value="afternoon">Popoludni</option>
+                    <option value="evening">Vecer</option>
+                  </select>
+                </div>
+              </div>
+              <label class="consent-row">
+                <input id="lead-marketing-consent" name="marketing_consent" type="checkbox" required />
+                <span>Suhlasim so spracovanim udajov a so zasielanim marketingovej komunikacie od StredEnergia.</span>
+              </label>
+              <button class="btn btn-primary" type="submit">Odoslat ziadost</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <div class="newsletter">
+        <div class="container">
+          <div class="newsletter-shell">
+            <div>
+              <h2>Novinky do e-mailovej schranky</h2>
+              <p>Aktuality, odstavky a odporucania podla zvoleneho segmentu.</p>
+            </div>
+            <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+              <input id="newsletter-email" type="email" placeholder="vas@email.sk" required />
+              <button class="btn btn-primary" type="submit">Odoslat</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:14px;">
+            <div class="mark"></div>
+            <div><div class="brand-title" style="color:#fff;">StredEnergia</div><div class="brand-sub">Demo utility portal</div></div>
+          </div>
+          <p>Demo web pre energetiku s Meiro Pipes event trackingom a zakaznickym portalom eZona.</p>
+        </div>
+        <div><h4>Domacnosti</h4><a>Elektrina</a><a>Plyn</a><a>Produkty a sluzby</a><a>Kontakty</a></div>
+        <div><h4>Firmy</h4><a>Velkoodber</a><a>E-sluzby</a><a>Poradenstvo</a><a>Dokumenty</a></div>
+        <div><h4>Podpora</h4><a>Odstavky</a><a>Poruchove linky</a><a>FAQ</a><a>Cookies a sukromie</a></div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="portal-app" class="portal-app">
+    <div class="portal-topbar">
+      <div class="container">
+        <a class="brand" onclick="returnToPublic()">
+          <div class="mark"></div>
+          <div><div class="brand-title" style="color:#fff;">eZona</div><div class="brand-sub" style="color:#b8f0aa;">StredEnergia</div></div>
+        </a>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="lang-switch" aria-label="Language">
+            <button data-lang-button="sk" class="active" onclick="setLanguage('sk')">SK</button>
+            <button data-lang-button="en" onclick="setLanguage('en')">EN</button>
+          </div>
+          <span id="portal-user-name" style="font-weight:750;"></span>
+          <button class="btn btn-outline" onclick="logoutPortal()">Odhlasit</button>
+        </div>
+      </div>
+    </div>
+    <div class="container portal-shell">
+      <aside class="portal-sidebar">
+        <button class="portal-nav-btn active" onclick="showPortalSection('overview',this)">Prehlad</button>
+        <button class="portal-nav-btn" onclick="showPortalSection('consumption',this)">Spotreba</button>
+        <button class="portal-nav-btn" onclick="showPortalSection('invoices',this)">Faktury a platby</button>
+        <button class="portal-nav-btn" onclick="showPortalSection('meter',this)">Odpocty</button>
+        <button class="portal-nav-btn" onclick="showPortalSection('requests',this)">Poziadavky</button>
+      </aside>
+      <main class="portal-main">
+        <section id="portal-overview" class="portal-section active">
+          <div class="portal-hero">
+            <div>
+              <div class="section-kicker">Zakaznicky ucet</div>
+              <h1>Dobre rano, <span id="overview-first-name">Eva</span>.</h1>
+              <p class="section-copy">Vsetky odberne miesta, platby a odporucania na jednom mieste.</p>
+            </div>
+            <button class="btn btn-primary" onclick="trackEvent('payment_started',{source:'overview',amount:currentCustomer.balance});showToast('Platba bola pripravena a odoslali sme event do Meiro.')">Zaplatit saldo</button>
+          </div>
+          <div class="portal-grid">
+            <div class="portal-card compact"><span class="tag">Saldo</span><div class="metric" id="balance-metric">0,00 EUR</div><p>Najblizsia splatnost <strong id="due-date">28.05.2026</strong></p></div>
+            <div class="portal-card compact"><span class="tag">Elektrina</span><div class="metric" id="electricity-metric">312 kWh</div><p>Medzimesacne <strong id="electricity-trend">-8 %</strong></p></div>
+            <div class="portal-card compact"><span class="tag">Plyn</span><div class="metric" id="gas-metric">48 m3</div><p>Odporucana zaloha <strong id="deposit-metric">82 EUR</strong></p></div>
+          </div>
+          <div class="portal-card">
+            <h3>Personalizovane odporucanie</h3>
+            <p id="recommendation-text">Zapnite si elektronicke faktury a upozornenia pred splatnostou.</p>
+            <button class="btn btn-blue" onclick="trackEvent('recommendation_clicked',{recommendation:currentCustomer.recommendationId})">Aktivovat odporucanie</button>
+          </div>
+        </section>
+
+        <section id="portal-consumption" class="portal-section">
+          <div class="portal-hero">
+            <div>
+              <div class="section-kicker">Spotreba</div>
+              <h1>Prehlad energie po mesiacoch</h1>
+              <p class="section-copy">Demo graf je jednoduchy HTML layer, aby bolo jasne vidiet eventy a zakaznicke spravanie.</p>
+            </div>
+            <button class="btn btn-outline" onclick="trackEvent('consumption_exported',{format:'csv'})">Export CSV</button>
+          </div>
+          <div class="portal-card">
+            <div class="usage-bars" id="portal-usage-bars" style="padding:0;"></div>
+          </div>
+        </section>
+
+        <section id="portal-invoices" class="portal-section">
+          <div class="portal-hero">
+            <div>
+              <div class="section-kicker">Faktury a platby</div>
+              <h1>Historia faktur a online platby</h1>
+            </div>
+            <button class="btn btn-primary" onclick="trackEvent('payment_started',{source:'invoices',amount:currentCustomer.balance})">Zaplatit online</button>
+          </div>
+          <div class="table-card" id="invoice-table"></div>
+        </section>
+
+        <section id="portal-meter" class="portal-section">
+          <div class="portal-hero">
+            <div>
+              <div class="section-kicker">Odpocty</div>
+              <h1>Nahlasenie stavu meradla</h1>
+            </div>
+            <span class="status-pill">Dalsi odpocet o 12 dni</span>
+          </div>
+          <div class="portal-card">
+            <div class="field"><label>Odberne miesto</label><select id="meter-place"><option>ZA-104-882 / Elektrina</option><option>ZA-104-883 / Plyn</option></select></div>
+            <div class="field"><label>Stav meradla</label><input id="meter-value" type="number" placeholder="napr. 18342" onfocus="trackEvent('meter_form_started',{})" /></div>
+            <button class="btn btn-primary" onclick="submitMeterReading()">Odoslat odpocet</button>
+          </div>
+        </section>
+
+        <section id="portal-requests" class="portal-section">
+          <div class="portal-hero">
+            <div>
+              <div class="section-kicker">Poziadavky</div>
+              <h1>Servisne ziadosti a zmeny</h1>
+            </div>
+            <button class="btn btn-blue" onclick="startServiceRequest('change_deposit')">Nova poziadavka</button>
+          </div>
+          <div class="cards-3">
+            <div class="portal-card"><h3>Zmena zalohy</h3><p>Upravte mesacne platby podla spotreby.</p><button class="btn btn-outline" onclick="startServiceRequest('change_deposit')">Zmenit</button></div>
+            <div class="portal-card"><h3>Prepis odberu</h3><p>Spustite online proces zmeny odberatela.</p><button class="btn btn-outline" onclick="startServiceRequest('move_contract')">Spustit</button></div>
+            <div class="portal-card"><h3>Kontaktna sprava</h3><p>Poslite otazku zakaznickej podpore.</p><button class="btn btn-outline" onclick="startServiceRequest('contact_support')">Napisat</button></div>
+          </div>
+          <div class="portal-card" id="request-form-card">
+            <h3>Nova poziadavka</h3>
+            <p>Po odoslani poziadavky posleme event do Meiro Pipes, kde mozete spustit follow-up procesy a komunikaciu.</p>
+            <form id="service-request-form" onsubmit="submitServiceRequest(event)">
+              <div class="lead-fields">
+                <div class="field">
+                  <label for="request-type">Typ poziadavky</label>
+                  <select id="request-type" name="request_type" onchange="trackEvent('service_request_started',{request_type:this.value})">
+                    <option value="change_deposit">Zmena zalohy</option>
+                    <option value="move_contract">Prepis odberu</option>
+                    <option value="contact_support">Kontaktna sprava</option>
+                    <option value="invoice_copy">Kopia faktury</option>
+                    <option value="outage_question">Otazka k odstavke</option>
+                    <option value="solar_consultation">Konzultacia fotovoltiky</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="request-meter-point">Odberne miesto</label>
+                  <select id="request-meter-point" name="meter_point">
+                    <option value="primary">Aktivne odberne miesto</option>
+                    <option value="secondary">Druhe odberne miesto</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="request-subject">Predmet</label>
+                  <input id="request-subject" name="subject" required placeholder="napr. Uprava mesacnej zalohy" />
+                </div>
+                <div class="field">
+                  <label for="request-contact-channel">Preferovany kontakt</label>
+                  <select id="request-contact-channel" name="preferred_contact_channel">
+                    <option value="email">E-mail</option>
+                    <option value="phone">Telefon</option>
+                    <option value="ezona_message">Sprava v eZone</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="request-message">Popis poziadavky</label>
+                <textarea id="request-message" name="message" rows="4" required placeholder="Strucne opiste, co potrebujete vybavit."></textarea>
+              </div>
+              <label class="consent-row" style="margin:4px 0 16px;">
+                <input id="request-contact-consent" name="contact_consent" type="checkbox" required />
+                <span>Suhlasim, aby ma StredEnergia kontaktovala k tejto poziadavke.</span>
+              </label>
+              <button class="btn btn-primary" type="submit">Odoslat poziadavku</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-card">
+      <div class="brand" style="margin-bottom:20px;">
+        <div class="mark"></div>
+        <div><div class="brand-title">eZona</div><div class="brand-sub">Zakaznicky portal</div></div>
+      </div>
+      <h2 style="font-size:28px;">Vyberte demo zakaznika</h2>
+      <p class="section-copy">Prihlasovanie simuluje realny portal a nastavi profil pre event payloady.</p>
+      <div class="persona-list" id="persona-list"></div>
+      <div class="field"><label>E-mail</label><input id="login-email" type="email" readonly /></div>
+      <div class="field"><label>Heslo</label><input type="password" value="••••••••" readonly /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
+        <button class="btn btn-outline" onclick="closeLogin()">Zrusit</button>
+        <button class="btn btn-primary" onclick="loginPortal()">Prihlasit</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="meiro-toggle" id="meiro-toggle" onclick="toggleMeiroPanel()">MEIRO CDP</button>
+  <aside class="meiro-panel" id="meiro-panel">
+    <div class="meiro-head">
+      <div>
+        <div style="font-weight:850;">Meiro CDP Inspector</div>
+        <div id="event-count" style="font-size:11px;color:#64748b;margin-top:3px;">0 events</div>
+      </div>
+      <button class="icon-btn" style="background:#161b26;color:#94a3b8;border-color:rgba(255,255,255,.08);" onclick="toggleMeiroPanel()">×</button>
+    </div>
+    <div class="meiro-tabs">
+      <button class="m-tab active" onclick="switchMTab('events',this)">Events</button>
+      <button class="m-tab" onclick="switchMTab('profile',this)">Profile</button>
+      <button class="m-tab" onclick="switchMTab('setup',this)">Setup</button>
+    </div>
+    <div class="m-panel active" id="mtab-events">
+      <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Latest Meiro Pipes events from website and eZona interactions.</div>
+      <div id="events-log"></div>
+    </div>
+    <div class="m-panel" id="mtab-profile">
+      <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Demo customer attributes attached after portal login.</div>
+      <div id="profile-log"></div>
+    </div>
+    <div class="m-panel" id="mtab-setup">
+      <div class="profile-row"><span class="profile-key">SDK</span><span class="profile-val">window.mpt</span></div>
+      <div class="profile-row"><span class="profile-key">Endpoint</span><span class="profile-val">/collect/sse-website</span></div>
+      <div class="profile-row"><span class="profile-key">Consent</span><span class="profile-val">granted</span></div>
+      <div class="profile-row"><span class="profile-key">Workspace</span><span class="profile-val">sse-demo.eu1</span></div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const customers = [
+      {
+        id: "eff170a6-a999-48f2-a186-4f25d616f258",
+        firstName: "Eva",
+        name: "Eva Kralova",
+        email: "eva.kralova@example.sk",
+        segment: "Digital household",
+        contract: "ZA-104-882",
+        balance: 0,
+        due: "28.05.2026",
+        electricity: 312,
+        gas: 48,
+        deposit: 82,
+        trend: "-8 %",
+        recommendation: "Zapnite si elektronicke faktury a upozornenia pred splatnostou.",
+        recommendationId: "paperless_invoice",
+        usage: [224, 248, 278, 196, 312, 266],
+        invoices: [
+          ["Faktura 04/2026", "Elektrina + plyn", "82,00 EUR", "Uhradena"],
+          ["Faktura 03/2026", "Elektrina", "49,20 EUR", "Uhradena"],
+          ["Vyuctovanie 2025", "Kombinovane", "-36,40 EUR", "Dobropis"]
+        ]
+      },
+      {
+        id: "2d57e1f9-42a6-4c4e-9f0e-cd12b4e6af3a",
+        firstName: "Martin",
+        name: "Martin Benko",
+        email: "martin.benko@example.sk",
+        segment: "Solar interest",
+        contract: "BB-772-119",
+        balance: 126.4,
+        due: "22.05.2026",
+        electricity: 528,
+        gas: 0,
+        deposit: 119,
+        trend: "+14 %",
+        recommendation: "Vasa spotreba rastie. Pozrite si konzultaciu k fotovoltike a optimalizacii tarify.",
+        recommendationId: "solar_consultation",
+        usage: [312, 340, 388, 466, 528, 490],
+        invoices: [
+          ["Faktura 04/2026", "Elektrina", "126,40 EUR", "Na uhradu"],
+          ["Faktura 03/2026", "Elektrina", "118,90 EUR", "Uhradena"],
+          ["Servisna navsteva", "Poradenstvo", "0,00 EUR", "Uzavrete"]
+        ]
+      },
+      {
+        id: "77dbe8aa-8f73-49b4-b25e-18ef0f04f8b7",
+        firstName: "Lucia",
+        name: "Lucia Urbanova",
+        email: "lucia.urbanova@example.sk",
+        segment: "SME multi-site",
+        contract: "MT-441-901",
+        balance: 438.2,
+        due: "18.05.2026",
+        electricity: 1430,
+        gas: 210,
+        deposit: 440,
+        trend: "+3 %",
+        recommendation: "Spojte viac odbernych miest do jedneho firemneho prehladu a nastavte role pre tim.",
+        recommendationId: "multi_site_portal",
+        usage: [1220, 1280, 1370, 1410, 1430, 1390],
+        invoices: [
+          ["Faktura 04/2026", "Firma / 3 miesta", "438,20 EUR", "Na uhradu"],
+          ["Faktura 03/2026", "Firma / 3 miesta", "421,00 EUR", "Uhradena"],
+          ["Zmena zalohy", "Poziadavka", "440,00 EUR", "Schvalene"]
+        ]
+      }
+    ];
+
+    let currentCustomer = customers[0];
+    let selectedCustomerIndex = 0;
+    let loginTime = null;
+    let events = [];
+    let currentLang = localStorage.getItem("sse_demo_lang") || "sk";
+    const originalTextNodes = new WeakMap();
+    const originalAttrs = new WeakMap();
+
+    const en = {
+      "Domacnosti": "Households",
+      "Podnikatelia a organizacie": "Businesses and organizations",
+      "Velkoodberatelia": "Large customers",
+      "Najcastejsie otazky": "Frequently asked questions",
+      "Vyhladavanie": "Search",
+      "Prihlasit sa": "Sign in",
+      "Prihlasit": "Sign in",
+      "Demo utility portal": "Demo utility portal",
+      "Elektrina": "Electricity",
+      "Plyn": "Gas",
+      "eZona a E-sluzby": "eZona and e-services",
+      "Poradenstvo": "Advice",
+      "Podpora": "Support",
+      "Firmy": "Companies",
+      "Verejna sprava": "Public sector",
+      "Energia pre stred Slovenska": "Energy for central Slovakia",
+      "Elektrina, plyn a e-sluzby bez zbytocnych krokov.": "Electricity, gas and e-services without unnecessary steps.",
+      "Moderny zakaznicky portal pre platby, odpocty, prehlad spotreby a rychlu pomoc pri odstavkach. Navrhnute ako contemporary demo inspirovane utility messagingom SSE.": "A modern customer portal for payments, meter readings, consumption overview and fast outage support. Designed as a contemporary demo inspired by SSE-style utility messaging.",
+      "Vybrat produkt": "Choose product",
+      "Vstupit do eZony": "Enter eZona",
+      "prehlad faktur, platieb a poziadaviek": "overview of invoices, payments and requests",
+      "rychly online prepis odberneho miesta": "fast online transfer of a supply point",
+      "aktivacia vybranych e-sluzieb": "activation of selected e-services",
+      "Co potrebujete vybavit?": "What do you need to handle?",
+      "Najcastejsie utility scenare su dostupne priamo z uvodu a merane v Meiro Pipes.": "The most common utility scenarios are available directly from the home page and measured in Meiro Pipes.",
+      "Zadat odpocet": "Submit meter reading",
+      "Nahlasenie stavu elektromera alebo plynomera.": "Report electricity or gas meter status.",
+      "Zaplatit fakturu": "Pay invoice",
+      "Online platba a prehlad salda.": "Online payment and balance overview.",
+      "Odstavky": "Outages",
+      "Planovane odstavky a poruchove linky.": "Planned outages and emergency lines.",
+      "Kontakt": "Contact",
+      "Kontakty": "Contacts",
+      "Zakaznicka podpora pre domacnosti a firmy.": "Customer support for households and companies.",
+      "Planovane odstavky": "Planned outages",
+      "Overte si dopad odstavok podla adresy alebo odberneho miesta.": "Check outage impact by address or supply point.",
+      "Skontrolovat adresu": "Check address",
+      "Cenniky a dokumenty": "Price lists and documents",
+      "Tarify, obchodne podmienky a poucenia pre odberatela.": "Tariffs, terms and customer information.",
+      "Otvorit dokumenty": "Open documents",
+      "Poruchove linky": "Emergency lines",
+      "Rychla pomoc podla komodity": "Fast help by commodity",
+      "Novy zakaznik": "New customer",
+      "Chcete zmenit dodavatela energie?": "Do you want to change your energy provider?",
+      "Nechajte nam kontakt a predmet zaujmu. Ozveme sa, pripravime odporucanie a prevedieme vas procesom zmeny dodavatela.": "Leave us your contact details and area of interest. We will contact you, prepare a recommendation and guide you through the provider transfer.",
+      "Meno": "First name",
+      "Priezvisko": "Last name",
+      "Telefon": "Phone",
+      "Predmet zaujmu": "Subject of interest",
+      "Chcem zmenit dodavatela": "I want to change provider",
+      "Nova zmluva na elektrinu": "New electricity contract",
+      "Nova zmluva na plyn": "New gas contract",
+      "Elektrina aj plyn": "Electricity and gas",
+      "Prechod firmy": "Business transfer",
+      "Energia + fotovoltika": "Energy + solar",
+      "Komodita": "Commodity",
+      "Neviem / poradit": "Not sure / advise me",
+      "Aktualny dodavatel": "Current provider",
+      "Kedy zavolat?": "When should we call?",
+      "Rano": "Morning",
+      "Popoludni": "Afternoon",
+      "Vecer": "Evening",
+      "Suhlasim s kontaktovanim a so zasielanim marketingovej komunikacie k zvolenej ponuke.": "I agree to be contacted and to receive marketing communication about the selected offer.",
+      "Poziadat o kontakt": "Request contact",
+      "Produkty a sluzby": "Products and services",
+      "Energeticke produkty s jasnym dalsim krokom.": "Energy products with a clear next step.",
+      "Obsah je postaveny na typickom utility journey: vyber komodity, digitalne sluzby, poradenstvo a starostlivost.": "The content follows a typical utility journey: commodity selection, digital services, advice and care.",
+      "Porovnat ponuky": "Compare offers",
+      "Teplo domova": "Home comfort",
+      "Uspory": "Savings",
+      "Elektrina pre domacnost": "Electricity for households",
+      "Stabilne dodavky, zalohove platby online a upozornenia na zmeny spotreby.": "Stable supply, online advance payments and alerts on consumption changes.",
+      "Mam zaujem": "I am interested",
+      "Plyn pre byvanie": "Gas for home",
+      "Jednoduche nastavenie preddavkov, historia faktur a odporucania pre sezonu.": "Simple deposit setup, invoice history and seasonal recommendations.",
+      "Zistit viac": "Learn more",
+      "Energeticke poradenstvo": "Energy advice",
+      "Fotovoltika, efektivne vykurovanie a odporucania podla spotrebneho profilu.": "Solar, efficient heating and recommendations based on consumption profile.",
+      "Objednat konzultaciu": "Book consultation",
+      "Customer portal ako demo prezentacnej aj servisnej vrstvy.": "Customer portal as a demo of the presentation and service layer.",
+      "Portal obsahuje prihlasenie, demo persony, spotrebu, faktury, odpocty, poziadavky a servisne nudges. Kazdy krok posiela udalost cez rovnaky Meiro Pipes SDK pattern ako existujuce demos.": "The portal includes login, demo personas, consumption, invoices, meter readings, requests and service nudges. Every step sends an event using the same Meiro Pipes SDK pattern as the existing demos.",
+      "Otvorit eZonu": "Open eZona",
+      "Spustit tour": "Start tour",
+      "Aktivne": "Active",
+      "Saldo": "Balance",
+      "Faktura 04/2026": "Invoice 04/2026",
+      "Uhradena": "Paid",
+      "Planovana odstavka": "Planned outage",
+      "Dalsi odpocet": "Next reading",
+      "o 12 dni": "in 12 days",
+      "Aktuality a upozornenia": "News and alerts",
+      "Utility messaging s priestorom pre personalizaciu.": "Utility messaging with room for personalization.",
+      "Viac aktualit": "More news",
+      "Pozor na skrat alebo poskodenie fotovoltiky pocas burkovej sezony": "Watch for short circuits or solar damage during storm season",
+      "Preventivne odporucania a rychle kontakty pre servisne situacie.": "Preventive recommendations and fast contacts for service situations.",
+      "Zakaznicke centrum sa docasne presuva": "Customer center temporarily relocates",
+      "Prehlad alternativnych kontaktov a online vybavenia poziadaviek.": "Overview of alternative contacts and online request handling.",
+      "Energeticky special pre domacnosti": "Energy special for households",
+      "Tipy na zalohy, spotrebu a podporu zranitelnych skupin.": "Tips for deposits, consumption and support for vulnerable groups.",
+      "Kontakt a poradenstvo": "Contact and advice",
+      "Nechajte si pripravit odporucanie pre vase odberne miesto.": "Let us prepare a recommendation for your supply point.",
+      "Zbierame zakladne zero-party udaje priamo od zakaznika: kontakt, zaujmy a suhlas s marketingovou komunikaciou.": "We collect basic zero-party data directly from the customer: contact, interests and marketing consent.",
+      "Mam zaujem o": "I am interested in",
+      "Kontrolu tarify": "Tariff review",
+      "Fotovoltiku": "Solar",
+      "Tepelne cerpadlo": "Heat pump",
+      "Firemnu energiu": "Business energy",
+      "Upozornenia na odstavky": "Outage notifications",
+      "Kontakt zakaznickej podpory": "Customer support contact",
+      "Preferovany cas": "Preferred time",
+      "Suhlasim so spracovanim udajov a so zasielanim marketingovej komunikacie od StredEnergia.": "I agree to data processing and to receive marketing communication from StredEnergia.",
+      "Odoslat ziadost": "Submit request",
+      "Novinky do e-mailovej schranky": "News to your inbox",
+      "Aktuality, odstavky a odporucania podla zvoleneho segmentu.": "News, outages and recommendations by selected segment.",
+      "Odoslat": "Submit",
+      "Demo web pre energetiku s Meiro Pipes event trackingom a zakaznickym portalom eZona.": "Energy demo website with Meiro Pipes event tracking and the eZona customer portal.",
+      "Velkoodber": "Large customers",
+      "E-sluzby": "E-services",
+      "Dokumenty": "Documents",
+      "FAQ": "FAQ",
+      "Cookies a sukromie": "Cookies and privacy",
+      "Zakaznicky portal": "Customer portal",
+      "Vyberte demo zakaznika": "Choose demo customer",
+      "Prihlasovanie simuluje realny portal a nastavi profil pre event payloady.": "Login simulates a real portal and sets the profile for event payloads.",
+      "Heslo": "Password",
+      "Zrusit": "Cancel",
+      "Odhlasit": "Log out",
+      "Prehlad": "Overview",
+      "Spotreba": "Consumption",
+      "Faktury a platby": "Invoices and payments",
+      "Odpocty": "Meter readings",
+      "Poziadavky": "Requests",
+      "Zakaznicky ucet": "Customer account",
+      "Dobre rano,": "Good morning,",
+      "Vsetky odberne miesta, platby a odporucania na jednom mieste.": "All supply points, payments and recommendations in one place.",
+      "Zaplatit saldo": "Pay balance",
+      "Najblizsia splatnost": "Nearest due date",
+      "Medzimesacne": "Month over month",
+      "Odporucana zaloha": "Recommended deposit",
+      "Personalizovane odporucanie": "Personalized recommendation",
+      "Zapnite si elektronicke faktury a upozornenia pred splatnostou.": "Turn on electronic invoices and due-date reminders.",
+      "Vasa spotreba rastie. Pozrite si konzultaciu k fotovoltike a optimalizacii tarify.": "Your consumption is increasing. Explore a solar consultation and tariff optimization.",
+      "Spojte viac odbernych miest do jedneho firemneho prehladu a nastavte role pre tim.": "Connect multiple supply points into one business overview and set team roles.",
+      "Aktivovat odporucanie": "Activate recommendation",
+      "Prehlad energie po mesiacoch": "Energy overview by month",
+      "Demo graf je jednoduchy HTML layer, aby bolo jasne vidiet eventy a zakaznicke spravanie.": "The demo chart is a simple HTML layer so events and customer behavior are easy to see.",
+      "Export CSV": "Export CSV",
+      "Historia faktur a online platby": "Invoice history and online payments",
+      "Zaplatit online": "Pay online",
+      "Nahlasenie stavu meradla": "Submit meter status",
+      "Dalsi odpocet o 12 dni": "Next reading in 12 days",
+      "Odberne miesto": "Supply point",
+      "Aktivne odberne miesto": "Active supply point",
+      "Druhe odberne miesto": "Second supply point",
+      "Stav meradla": "Meter status",
+      "Odoslat odpocet": "Submit reading",
+      "Servisne ziadosti a zmeny": "Service requests and changes",
+      "Nova poziadavka": "New request",
+      "Zmena zalohy": "Deposit change",
+      "Upravte mesacne platby podla spotreby.": "Adjust monthly payments based on consumption.",
+      "Zmenit": "Change",
+      "Prepis odberu": "Supply transfer",
+      "Spustite online proces zmeny odberatela.": "Start the online customer transfer process.",
+      "Spustit": "Start",
+      "Kontaktna sprava": "Contact message",
+      "Poslite otazku zakaznickej podpore.": "Send a question to customer support.",
+      "Napisat": "Write",
+      "Po odoslani poziadavky posleme event do Meiro Pipes, kde mozete spustit follow-up procesy a komunikaciu.": "After submission we send an event to Meiro Pipes, where you can trigger follow-up processes and communication.",
+      "Typ poziadavky": "Request type",
+      "Kopia faktury": "Invoice copy",
+      "Otazka k odstavke": "Outage question",
+      "Konzultacia fotovoltiky": "Solar consultation",
+      "Predmet": "Subject",
+      "Preferovany kontakt": "Preferred contact",
+      "Sprava v eZone": "Message in eZona",
+      "Popis poziadavky": "Request description",
+      "Suhlasim, aby ma StredEnergia kontaktovala k tejto poziadavke.": "I agree that StredEnergia may contact me about this request.",
+      "Odoslat poziadavku": "Submit request",
+      "Nazov": "Name",
+      "Typ": "Type",
+      "Suma": "Amount",
+      "Stav": "Status",
+      "Na uhradu": "Due",
+      "Dobropis": "Credit note",
+      "Schvalene": "Approved",
+      "Firma / 3 miesta": "Company / 3 sites",
+      "Poziadavka": "Request",
+      "Odpocet bol odoslany a event je v inspectore.": "The meter reading was submitted and the event is in the inspector.",
+      "Zadajte stav meradla.": "Enter the meter status.",
+      "Dakujeme za prihlasenie k novinkam.": "Thank you for subscribing to updates.",
+      "Dakujeme, ziadost bola odoslana a lead event je v Meiro inspectore.": "Thank you, the request was submitted and the lead event is in the Meiro inspector.",
+      "Prihlasenie do eZony bolo zaznamenane v Meiro Pipes.": "eZona login was recorded in Meiro Pipes.",
+      "Odhlasenie bolo zaznamenane.": "Logout was recorded."
+    };
+
+    const attrTranslations = {
+      "Otvorit vyhladavanie": "Open search",
+      "Hlavna navigacia": "Main navigation",
+      "Rychle akcie": "Quick actions",
+      "Nahlad portalu": "Portal preview",
+      "+421...": "+421...",
+      "volitelne": "optional",
+      "vas@email.sk": "your@email.sk",
+      "napr. Uprava mesacnej zalohy": "e.g. adjust monthly deposit",
+      "Strucne opiste, co potrebujete vybavit.": "Briefly describe what you need to handle."
+    };
+
+    function tr(text) {
+      if (currentLang === "sk") return text;
+      return en[text] || text;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem("sse_demo_lang", lang);
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-lang-button]").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-lang-button") === lang);
+      });
+      applyLanguage();
+      trackEvent("language_selected", { language: lang });
+    }
+
+    function applyLanguage(root = document.body) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent) return NodeFilter.FILTER_REJECT;
+          if (["SCRIPT", "STYLE", "SVG"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        if (!originalTextNodes.has(node)) originalTextNodes.set(node, node.nodeValue);
+        const source = originalTextNodes.get(node);
+        const leading = source.match(/^\s*/)[0];
+        const trailing = source.match(/\s*$/)[0];
+        const core = source.trim();
+        node.nodeValue = leading + tr(core) + trailing;
+      });
+
+      document.querySelectorAll("[placeholder], [title], [aria-label]").forEach(el => {
+        const stored = originalAttrs.get(el) || {};
+        ["placeholder", "title", "aria-label"].forEach(attr => {
+          if (!el.hasAttribute(attr)) return;
+          if (!stored[attr]) stored[attr] = el.getAttribute(attr);
+          const original = stored[attr];
+          el.setAttribute(attr, currentLang === "sk" ? original : (attrTranslations[original] || en[original] || original));
+        });
+        originalAttrs.set(el, stored);
+      });
+    }
+
+    function buildMptEvent(name, props) {
+      const p = props || {};
+      switch (name) {
+        case "page_view":
+        case "public_home_viewed":
+        case "portal_section_viewed":
+          return ["page_view", {
+            page_title: p.page || name
+          }];
+        case "login":
+          return ["login", { method: p.method || "ezona_demo" }];
+        case "logout":
+          return ["user_engagement", { engagement_time_msec: (p.session_duration_seconds || 0) * 1000 }];
+        case "segment_selected":
+        case "nav_clicked":
+        case "quick_action_clicked":
+        case "support_link_clicked":
+        case "search_opened":
+        case "portal_demo_tour_clicked":
+        case "outage_lookup_started":
+        case "service_request_started":
+        case "language_selected":
+        case "meter_form_started":
+          return ["select_content", { content_type: name, item_id: p.segment || p.item || p.action || p.topic || p.request_type || p.language || "utility" }];
+        case "service_request_submitted":
+          return ["form_submit", {
+            form_id: "ezona_service_request",
+            field00: p.request_type,
+            field01: p.meter_point,
+            field02: p.subject,
+            field03: p.message,
+            field04: p.preferred_contact_channel,
+            field05: p.contact_consent,
+            field06: p.request_id,
+            field07: p.customer_id
+          }];
+        case "product_card_viewed":
+          return ["view_item", { items: [{ item_id: p.product, item_name: p.product }] }];
+        case "tariff_cta_clicked":
+        case "consultation_started":
+          return ["generate_lead", { currency: "EUR", value: 0 }];
+        case "product_comparison_clicked":
+          return ["view_item_list", { item_list_id: "energy_tariffs", item_list_name: "Energy tariffs" }];
+        case "article_opened":
+          return ["select_content", { content_type: "article", item_id: p.article }];
+        case "newsletter_subscribed":
+          return ["sign_up", { method: "newsletter" }];
+        case "lead_form_submitted":
+          return ["form_submit", {
+            form_id: "energy_consultation_lead",
+            first_name: p.first_name,
+            last_name: p.last_name,
+            email: p.email,
+            phone_number: p.phone,
+            field00: p.marketing_consent,
+            field01: p.interest,
+            field02: p.contact_time
+          }];
+        case "new_customer_registration_submitted":
+          return ["form_submit", {
+            form_id: "new_customer_onboarding",
+            first_name: p.first_name,
+            last_name: p.last_name,
+            email: p.email,
+            phone_number: p.phone,
+            field00: p.marketing_consent,
+            field01: p.interest,
+            field02: p.commodity,
+            field03: p.current_provider,
+            field04: p.contact_time,
+            field05: p.request_id
+          }];
+        case "document_download_started":
+        case "invoice_downloaded":
+        case "consumption_exported":
+          return ["file_download", { file_name: p.document || p.invoice || ("consumption." + (p.format || "csv")), link_url: window.location.href }];
+        case "payment_started":
+          return ["begin_checkout", { currency: "EUR", value: p.amount || 0, items: [{ item_id: "utility_payment", item_name: "Utility payment", price: p.amount || 0 }] }];
+        case "payment_completed":
+          return ["purchase", { transaction_id: "PAY" + Date.now(), currency: "EUR", value: p.amount || 0, items: [{ item_id: "utility_payment", item_name: "Utility payment", price: p.amount || 0 }] }];
+        case "meter_reading_submitted":
+          return ["form_submit", { form_id: "meter_reading", form_name: "Meter reading" }];
+        case "recommendation_clicked":
+          return ["select_promotion", { promotion_id: p.recommendation || "recommendation", promotion_name: "Portal recommendation" }];
+        default:
+          return ["user_engagement", { engagement_time_msec: 1 }];
+      }
+    }
+
+    function trackEvent(name, props) {
+      const [canonical, payload] = buildMptEvent(name, props || {});
+      if (currentCustomer && loginTime && canonical !== "page_view" && canonical !== "form_submit") {
+        payload.user_id = currentCustomer.id;
+      }
+      console.log("[Meiro SSE Demo]", canonical, "(" + name + ")", payload);
+      try {
+        const result = mpt("event", canonical, payload);
+        if (result && typeof result.catch === "function") result.catch(err => console.warn("[Meiro SSE Demo]", err));
+      } catch (err) {
+        console.warn("[Meiro SSE Demo]", err);
+      }
+      logEvent(canonical + " · " + name, payload);
+    }
+
+    function setMptIdentity(userId) {
+      mpt("consent", { user_id: "denied", session_id: "denied" });
+      try {
+        localStorage.setItem("mptEventsUserId", userId);
+        localStorage.setItem("mpt_user_id_js", userId);
+        document.cookie = `mpt_user_id_js=${encodeURIComponent(userId)};path=/;SameSite=Strict;max-age=63072000`;
+        sessionStorage.removeItem("mptEventsSessionId");
+        sessionStorage.removeItem("mptEventsSessionIdUsedTs");
+        localStorage.removeItem("mptEventsSessionId");
+        localStorage.removeItem("mptEventsSessionIdUsedTs");
+      } catch (err) {
+        console.warn("[Meiro SSE Demo] Could not persist identity", err);
+      }
+      mpt("consent", {
+        storage_persistence: "granted",
+        user_id: "granted",
+        session_id: "granted"
+      });
+      mpt("get", "user_id", activeId => console.log("[Meiro SSE Demo] active SDK user_id", activeId));
+    }
+
+    function logEvent(name, payload) {
+      const time = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      events.unshift({ name, payload, time });
+      renderEvents();
+    }
+
+    function renderEvents() {
+      document.getElementById("event-count").textContent = events.length + " events";
+      document.getElementById("events-log").innerHTML = events.slice(0, 42).map(e => `
+        <div class="event-row">
+          <div class="event-name">${e.name}</div>
+          <div class="event-sub">${escapeHtml(JSON.stringify(e.payload))}</div>
+          <div class="event-time">${e.time}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderProfile() {
+      const rows = currentCustomer ? [
+        ["customer_id", currentCustomer.id],
+        ["name", currentCustomer.name],
+        ["email", currentCustomer.email],
+        ["segment", currentCustomer.segment],
+        ["contract", currentCustomer.contract],
+        ["balance", currentCustomer.balance.toFixed(2) + " EUR"],
+        ["recommendation", currentCustomer.recommendationId]
+      ] : [["status", "No portal login yet"]];
+      document.getElementById("profile-log").innerHTML = rows.map(([k,v]) => `
+        <div class="profile-row"><span class="profile-key">${k}</span><span class="profile-val">${escapeHtml(String(v))}</span></div>
+      `).join("");
+    }
+
+    function toggleMeiroPanel() {
+      document.getElementById("meiro-panel").classList.toggle("open");
+      document.getElementById("meiro-toggle").classList.toggle("open");
+    }
+
+    function switchMTab(tab, el) {
+      document.querySelectorAll(".m-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".m-panel").forEach(p => p.classList.remove("active"));
+      el.classList.add("active");
+      document.getElementById("mtab-" + tab).classList.add("active");
+    }
+
+    function setSegment(segment, el) {
+      document.querySelectorAll(".segment-switch button").forEach(b => b.classList.remove("active"));
+      el.classList.add("active");
+      const title = document.getElementById("hero-title");
+      const copy = document.getElementById("hero-copy");
+      const content = {
+        domacnosti: ["Elektrina, plyn a e-sluzby bez zbytocnych krokov.", "Moderny zakaznicky portal pre platby, odpocty, prehlad spotreby a rychlu pomoc pri odstavkach."],
+        firmy: ["Energia pre firmy s kontrolou nakladov a odbernych miest.", "Prehlady spotreby, fakturacia, role pre tim a servisne poziadavky v jednom portali."],
+        sprava: ["Spolahliva energia pre obce, skoly a verejne organizacie.", "Reporting, dokumenty a starostlivost pre viac odbernych miest s jasnym servisnym procesom."]
+      };
+      title.textContent = content[segment][0];
+      copy.textContent = content[segment][1];
+      applyLanguage();
+      trackEvent("segment_selected", { segment });
+    }
+
+    function scrollToId(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function focusLeadForm(interest) {
+      const interestSelect = document.getElementById("lead-interest");
+      if (interestSelect && interest) interestSelect.value = interest;
+      document.getElementById("kontakt")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.setTimeout(() => document.getElementById("lead-first-name")?.focus(), 420);
+    }
+
+    function openLogin() {
+      renderPersonas();
+      document.getElementById("login-overlay").style.display = "flex";
+      setMptIdentity(currentCustomer.id);
+      trackEvent("portal_section_viewed", { page: "login_overlay" });
+    }
+
+    function closeLogin() {
+      document.getElementById("login-overlay").style.display = "none";
+    }
+
+    function renderPersonas() {
+      document.getElementById("persona-list").innerHTML = customers.map((c, i) => `
+        <button class="persona-btn ${i === selectedCustomerIndex ? "selected" : ""}" onclick="selectPersona(${i})">
+          <strong>${c.name}</strong>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">${c.segment} · ${c.contract}</div>
+        </button>
+      `).join("");
+      document.getElementById("login-email").value = customers[selectedCustomerIndex].email;
+      applyLanguage(document.getElementById("login-overlay"));
+    }
+
+    function selectPersona(index) {
+      selectedCustomerIndex = index;
+      currentCustomer = customers[index];
+      renderPersonas();
+      setMptIdentity(currentCustomer.id);
+      trackEvent("segment_selected", { segment: currentCustomer.segment });
+    }
+
+    function loginPortal() {
+      currentCustomer = customers[selectedCustomerIndex];
+      loginTime = Date.now();
+      setMptIdentity(currentCustomer.id);
+      mpt("set", {
+        user_id: currentCustomer.id,
+        email: currentCustomer.email,
+        segment: currentCustomer.segment,
+        contract_id: currentCustomer.contract
+      });
+      logEvent("set", { user_id: currentCustomer.id, email: currentCustomer.email, segment: currentCustomer.segment });
+      try {
+        const loginResult = mpt("event", "login", { method: "ezona_demo", user_id: currentCustomer.id });
+        if (loginResult && typeof loginResult.catch === "function") loginResult.catch(err => console.warn("[Meiro SSE Demo]", err));
+      } catch (err) {
+        console.warn("[Meiro SSE Demo]", err);
+      }
+      logEvent("login", { method: "ezona_demo", user_id: currentCustomer.id });
+      closeLogin();
+      document.getElementById("public-site").style.display = "none";
+      document.getElementById("portal-app").style.display = "block";
+      renderPortal();
+      renderProfile();
+      trackEvent("portal_section_viewed", { page: "portal_overview" });
+      showToast("Prihlasenie do eZony bolo zaznamenane v Meiro Pipes.");
+    }
+
+    function logoutPortal() {
+      const duration = loginTime ? Math.round((Date.now() - loginTime) / 1000) : 0;
+      trackEvent("logout", { session_duration_seconds: duration });
+      loginTime = null;
+      document.getElementById("portal-app").style.display = "none";
+      document.getElementById("public-site").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("Odhlasenie bolo zaznamenane.");
+    }
+
+    function returnToPublic() {
+      trackEvent("nav_clicked", { item: "return_public_site" });
+      document.getElementById("portal-app").style.display = "none";
+      document.getElementById("public-site").style.display = "block";
+    }
+
+    function showPublicHome() {
+      trackEvent("public_home_viewed", { page: "home" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showPortalSection(name, el) {
+      document.querySelectorAll(".portal-nav-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".portal-section").forEach(section => section.classList.remove("active"));
+      el.classList.add("active");
+      document.getElementById("portal-" + name).classList.add("active");
+      trackEvent("portal_section_viewed", { page: "portal_" + name });
+    }
+
+    function renderPortal() {
+      document.getElementById("portal-user-name").textContent = currentCustomer.name;
+      document.getElementById("overview-first-name").textContent = currentCustomer.firstName;
+      document.getElementById("balance-metric").textContent = currentCustomer.balance.toFixed(2).replace(".", ",") + " EUR";
+      document.getElementById("due-date").textContent = currentCustomer.due;
+      document.getElementById("electricity-metric").textContent = currentCustomer.electricity + " kWh";
+      document.getElementById("gas-metric").textContent = currentCustomer.gas + " m3";
+      document.getElementById("electricity-trend").textContent = currentCustomer.trend;
+      document.getElementById("deposit-metric").textContent = currentCustomer.deposit + " EUR";
+      document.getElementById("recommendation-text").textContent = currentCustomer.recommendation;
+      renderUsageBars();
+      renderInvoices();
+      applyLanguage(document.getElementById("portal-app"));
+    }
+
+    function renderUsageBars() {
+      const months = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun"];
+      const max = Math.max(...currentCustomer.usage);
+      document.getElementById("portal-usage-bars").innerHTML = currentCustomer.usage.map((value, i) => `
+        <div class="usage-row" style="grid-template-columns:64px 1fr 70px;">
+          <span>${months[i]}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(value / max * 100)}%"></div></div>
+          <strong>${value}</strong>
+        </div>
+      `).join("");
+      applyLanguage(document.getElementById("portal-usage-bars"));
+    }
+
+    function renderInvoices() {
+      const rows = [
+        ["Nazov", "Typ", "Suma", "Stav", ""],
+        ...currentCustomer.invoices
+      ];
+      document.getElementById("invoice-table").innerHTML = rows.map((r, i) => `
+        <div class="table-row">
+          <strong>${r[0]}</strong>
+          <span>${r[1]}</span>
+          <span>${r[2]}</span>
+          <span>${i === 0 ? r[3] : `<span class="status-pill">${r[3]}</span>`}</span>
+          <span>${i === 0 ? "" : `<button class="btn btn-quiet" onclick="trackEvent('invoice_downloaded',{invoice:'${r[0]}'})">PDF</button>`}</span>
+        </div>
+      `).join("");
+      applyLanguage(document.getElementById("invoice-table"));
+    }
+
+    function submitMeterReading() {
+      const value = document.getElementById("meter-value").value;
+      if (!value) {
+        showToast("Zadajte stav meradla.");
+        return;
+      }
+      trackEvent("meter_reading_submitted", {
+        contract: currentCustomer.contract,
+        value: Number(value),
+        place: document.getElementById("meter-place").value
+      });
+      showToast("Odpocet bol odoslany a event je v inspectore.");
+      document.getElementById("meter-value").value = "";
+    }
+
+    function startServiceRequest(type) {
+      const requestType = document.getElementById("request-type");
+      if (requestType) requestType.value = type;
+      trackEvent("service_request_started", { request_type: type });
+      document.getElementById("request-form-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.setTimeout(() => document.getElementById("request-subject")?.focus(), 360);
+    }
+
+    function submitServiceRequest(event) {
+      event.preventDefault();
+      const requestId = "REQ-" + Date.now();
+      const meterPointSelect = document.getElementById("request-meter-point");
+      const meterPointValue = meterPointSelect.value === "primary"
+        ? currentCustomer.contract
+        : currentCustomer.contract + "-02";
+      const payload = {
+        request_id: requestId,
+        customer_id: currentCustomer.id,
+        request_type: document.getElementById("request-type").value,
+        meter_point: meterPointValue,
+        subject: document.getElementById("request-subject").value.trim(),
+        message: document.getElementById("request-message").value.trim(),
+        preferred_contact_channel: document.getElementById("request-contact-channel").value,
+        contact_consent: document.getElementById("request-contact-consent").checked
+      };
+      trackEvent("service_request_submitted", payload);
+      document.getElementById("service-request-form").reset();
+      showToast(`Poziadavka ${requestId} bola odoslana do Meiro Pipes.`);
+    }
+
+    function subscribeNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById("newsletter-email").value;
+      trackEvent("newsletter_subscribed", { email_domain: email.split("@")[1] || "unknown" });
+      document.getElementById("newsletter-email").value = "";
+      showToast("Dakujeme za prihlasenie k novinkam.");
+    }
+
+    function submitOnboardingForm(event) {
+      event.preventDefault();
+      const requestId = "ONB-" + Date.now();
+      const payload = {
+        request_id: requestId,
+        first_name: document.getElementById("onboarding-first-name").value.trim(),
+        last_name: document.getElementById("onboarding-last-name").value.trim(),
+        email: document.getElementById("onboarding-email").value.trim(),
+        phone: document.getElementById("onboarding-phone").value.trim(),
+        interest: document.getElementById("onboarding-interest").value,
+        commodity: document.getElementById("onboarding-commodity").value,
+        current_provider: document.getElementById("onboarding-current-provider").value.trim(),
+        contact_time: document.getElementById("onboarding-contact-time").value,
+        marketing_consent: document.getElementById("onboarding-marketing-consent").checked
+      };
+      trackEvent("new_customer_registration_submitted", payload);
+      document.getElementById("onboarding-form").reset();
+      showToast(`Dakujeme, registracia ${requestId} bola odoslana do Meiro Pipes.`);
+    }
+
+    function submitLeadForm(event) {
+      event.preventDefault();
+      const payload = {
+        first_name: document.getElementById("lead-first-name").value.trim(),
+        last_name: document.getElementById("lead-last-name").value.trim(),
+        email: document.getElementById("lead-email").value.trim(),
+        phone: document.getElementById("lead-phone").value.trim(),
+        marketing_consent: document.getElementById("lead-marketing-consent").checked,
+        interest: document.getElementById("lead-interest").value,
+        contact_time: document.getElementById("lead-contact-time").value
+      };
+      trackEvent("lead_form_submitted", payload);
+      document.getElementById("lead-form").reset();
+      showToast("Dakujeme, ziadost bola odoslana a lead event je v Meiro inspectore.");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = tr(message);
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      }[c]));
+    }
+
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll("[data-lang-button]").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-lang-button") === currentLang);
+    });
+    renderProfile();
+    applyLanguage();
+    trackEvent("page_view", { page: "public_home" });
+  </script>
+</body>
+</html>
