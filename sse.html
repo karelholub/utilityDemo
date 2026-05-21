@@ -948,17 +948,17 @@
     <div class="top-strip">
       <div class="container">
         <div class="top-links">
-          <a onclick="trackEvent('segment_selected',{segment:'domacnosti'})">Domacnosti</a>
-          <a onclick="trackEvent('segment_selected',{segment:'podnikatelia'})">Podnikatelia a organizacie</a>
-          <a onclick="trackEvent('segment_selected',{segment:'velkoodber'})">Velkoodberatelia</a>
-          <a onclick="trackEvent('support_link_clicked',{topic:'faq'})">Najcastejsie otazky</a>
+          <a onclick="chooseAudience('domacnosti')">Domacnosti</a>
+          <a onclick="chooseAudience('firmy')">Podnikatelia a organizacie</a>
+          <a onclick="chooseAudience('sprava')">Velkoodberatelia</a>
+          <a onclick="trackEvent('support_link_clicked',{topic:'faq'});scrollToId('podpora')">Najcastejsie otazky</a>
         </div>
         <div class="utility-links">
           <div class="lang-switch" aria-label="Language">
             <button id="lang-sk" data-lang-button="sk" class="active" onclick="setLanguage('sk')">SK</button>
             <button id="lang-en" data-lang-button="en" onclick="setLanguage('en')">EN</button>
           </div>
-          <a onclick="trackEvent('search_opened',{})">Vyhladavanie</a>
+          <a onclick="openSiteSearch()">Vyhladavanie</a>
           <a onclick="openLogin()">eZona</a>
           <button class="btn btn-primary" onclick="openLogin()">Prihlasit sa</button>
         </div>
@@ -981,7 +981,7 @@
           <a href="#poradenstvo" onclick="trackEvent('nav_clicked',{item:'poradenstvo'})">Poradenstvo</a>
           <a href="#podpora" onclick="trackEvent('nav_clicked',{item:'podpora'})">Podpora</a>
         </nav>
-        <button class="icon-btn" title="Otvorit vyhladavanie" onclick="trackEvent('search_opened',{})">
+        <button class="icon-btn" title="Otvorit vyhladavanie" onclick="openSiteSearch()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         </button>
       </div>
@@ -1053,7 +1053,7 @@
               <div class="support-card">
                 <strong>Cenniky a dokumenty</strong>
                 <p>Tarify, obchodne podmienky a poucenia pre odberatela.</p>
-                <button class="btn btn-quiet" onclick="trackEvent('document_download_started',{document:'price_lists'})">Otvorit dokumenty</button>
+                <button class="btn btn-quiet" onclick="downloadDemoDocument('price_lists')">Otvorit dokumenty</button>
               </div>
             </div>
             <div class="fault-box">
@@ -1224,10 +1224,10 @@
               <div class="section-kicker">Aktuality a upozornenia</div>
               <h2>Utility messaging s priestorom pre personalizaciu.</h2>
             </div>
-            <button class="btn btn-outline" onclick="trackEvent('news_archive_clicked',{})">Viac aktualit</button>
+            <button class="btn btn-outline" onclick="showMoreNews()">Viac aktualit</button>
           </div>
           <div class="news-grid">
-            <article class="news-card feature" onclick="trackEvent('article_opened',{article:'solar_damage_warning'})">
+            <article class="news-card feature" onclick="openArticleAction('solar_damage_warning','solar')">
               <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1100&q=80" alt="Solarne panely na streche" />
               <div class="news-body">
                 <div class="date">29.04.2026</div>
@@ -1235,7 +1235,7 @@
                 <p>Preventivne odporucania a rychle kontakty pre servisne situacie.</p>
               </div>
             </article>
-            <article class="news-card" onclick="trackEvent('article_opened',{article:'customer_center_moved'})">
+            <article class="news-card" onclick="openArticleAction('customer_center_moved','contact_support')">
               <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80" alt="Zakaznicke centrum" />
               <div class="news-body">
                 <div class="date">17.04.2026</div>
@@ -1243,7 +1243,7 @@
                 <p>Prehlad alternativnych kontaktov a online vybavenia poziadaviek.</p>
               </div>
             </article>
-            <article class="news-card" onclick="trackEvent('article_opened',{article:'senior_energy'})">
+            <article class="news-card" onclick="openArticleAction('senior_energy','tariff_review')">
               <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80" alt="Poradenstvo pre zakaznikov" />
               <div class="news-body">
                 <div class="date">01.04.2026</div>
@@ -1619,7 +1619,8 @@
     let selectedCustomerIndex = 0;
     let loginTime = null;
     let events = [];
-    let currentLang = localStorage.getItem("sse_demo_lang") || "sk";
+    const languageStorageKey = "sse_demo_lang_v2";
+    let currentLang = localStorage.getItem(languageStorageKey) || "en";
     const originalTextNodes = new WeakMap();
     const originalAttrs = new WeakMap();
 
@@ -1816,7 +1817,10 @@
       "Dakujeme za prihlasenie k novinkam.": "Thank you for subscribing to updates.",
       "Dakujeme, ziadost bola odoslana a lead event je v Meiro inspectore.": "Thank you, the request was submitted and the lead event is in the Meiro inspector.",
       "Prihlasenie do eZony bolo zaznamenane v Meiro Pipes.": "eZona login was recorded in Meiro Pipes.",
-      "Odhlasenie bolo zaznamenane.": "Logout was recorded."
+      "Odhlasenie bolo zaznamenane.": "Logout was recorded.",
+      "Vyhladavanie je v deme prepojene na kontaktny formular. Zadajte udaje a my sa ozveme.": "Search in this demo is connected to the contact form. Leave your details and we will get back to you.",
+      "Demo dokument bol pripraveny na stiahnutie.": "Demo document was prepared for download.",
+      "Pre aktuality a upozornenia zadajte e-mail v newsletter formulari.": "For news and alerts, enter your email in the newsletter form."
     };
 
     const attrTranslations = {
@@ -1838,7 +1842,7 @@
 
     function setLanguage(lang) {
       currentLang = lang;
-      localStorage.setItem("sse_demo_lang", lang);
+      localStorage.setItem(languageStorageKey, lang);
       document.documentElement.lang = lang;
       document.querySelectorAll("[data-lang-button]").forEach(btn => {
         btn.classList.toggle("active", btn.getAttribute("data-lang-button") === lang);
@@ -1902,6 +1906,7 @@
         case "outage_lookup_started":
         case "service_request_started":
         case "language_selected":
+        case "news_archive_clicked":
         case "meter_form_started":
           return ["select_content", { content_type: name, item_id: p.segment || p.item || p.action || p.topic || p.request_type || p.language || "utility" }];
         case "service_request_submitted":
@@ -2067,6 +2072,47 @@
 
     function scrollToId(id) {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function chooseAudience(segment) {
+      const index = { domacnosti: 0, firmy: 1, sprava: 2 }[segment] || 0;
+      const button = document.querySelectorAll(".segment-switch button")[index];
+      if (button) setSegment(segment, button);
+      scrollToId("elektrina");
+    }
+
+    function openSiteSearch() {
+      trackEvent("search_opened", {});
+      focusLeadForm("contact_support");
+      showToast("Vyhladavanie je v deme prepojene na kontaktny formular. Zadajte udaje a my sa ozveme.");
+    }
+
+    function downloadDemoDocument(documentName) {
+      trackEvent("document_download_started", { document: documentName });
+      const content = [
+        "StredEnergia demo document",
+        "Document: " + documentName,
+        "This placeholder download represents tariffs, terms and customer information in the demo."
+      ].join("\n");
+      const link = document.createElement("a");
+      link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
+      link.download = "stredenergia-" + documentName + ".txt";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      showToast("Demo dokument bol pripraveny na stiahnutie.");
+    }
+
+    function showMoreNews() {
+      trackEvent("news_archive_clicked", {});
+      document.querySelector(".newsletter")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.setTimeout(() => document.getElementById("newsletter-email")?.focus(), 420);
+      showToast("Pre aktuality a upozornenia zadajte e-mail v newsletter formulari.");
+    }
+
+    function openArticleAction(article, interest) {
+      trackEvent("article_opened", { article });
+      focusLeadForm(interest);
     }
 
     function focusLeadForm(interest) {
