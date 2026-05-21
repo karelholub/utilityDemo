@@ -915,32 +915,6 @@
       line-height: 1.45;
       margin-bottom: 9px;
     }
-    .cli-command {
-      position: relative;
-      margin-top: 8px;
-      padding: 9px 34px 9px 10px;
-      border: 1px solid rgba(148,163,184,.16);
-      border-radius: 6px;
-      background: #080b12;
-      color: #c4b5fd;
-      font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
-    .cli-copy-btn {
-      position: absolute;
-      right: 6px;
-      top: 6px;
-      width: 22px;
-      height: 22px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: #111827;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 12px;
-      line-height: 1;
-    }
     .cli-note {
       margin-top: 10px;
       color: #64748b;
@@ -1602,19 +1576,16 @@
       <button class="m-tab active" onclick="switchMTab('events',this)">Events</button>
       <button class="m-tab" onclick="switchMTab('profile',this)">Profile</button>
       <button class="m-tab" onclick="switchMTab('setup',this)">Setup</button>
-      <button class="m-tab" onclick="switchMTab('cli',this)">CLI</button>
+      <button class="m-tab" onclick="switchMTab('live',this)">Live</button>
     </div>
     <div class="m-panel active" id="mtab-events">
       <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Latest Meiro Pipes events from website and eZona interactions.</div>
       <div id="events-log"></div>
       <div class="cli-card">
         <div class="cli-title">Validate ingestion</div>
-        <div class="cli-copy">Use these after adding your API token to check whether events reached Pipes and whether queues are moving.</div>
-        <div class="cli-command">export MPCLI_URL="https://sse-demo.eu1.pipes.meiro.io"<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">export MPCLI_TOKEN="mpat_..."<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli status<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/dashboard<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/health/queues<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="cli-copy">Checks the SSE Website source, event flow, queue backlog, and error counters through the Netlify proxy.</div>
+        <button class="live-check-btn" onclick="runMeiroLiveCheck(this)">Validate ingestion</button>
+        <div class="live-result" id="meiro-events-live-result">Not checked from this browser yet.</div>
       </div>
     </div>
     <div class="m-panel" id="mtab-profile">
@@ -1629,46 +1600,28 @@
       <div class="profile-row"><span class="profile-key">Origin</span><span class="profile-val">utilitydemo.netlify.app</span></div>
       <div class="profile-row"><span class="profile-key">Consent</span><span class="profile-val">granted</span></div>
       <div class="profile-row"><span class="profile-key">Workspace</span><span class="profile-val">sse-demo.eu1</span></div>
-      <div class="profile-row"><span class="profile-key">Last CLI check</span><span class="profile-val">auth ok, queues clear</span></div>
+      <div class="profile-row"><span class="profile-key">Live status</span><span class="profile-val">ready</span></div>
       <div class="cli-card">
         <div class="cli-title">Web SDK contract</div>
         <div class="cli-copy">The source is enabled on the Web SDK template 2026-05-15. The page grants consent, sets browser user_id to the selected demo UUID, and sends only accepted GA4-style event names.</div>
         <button class="live-check-btn" onclick="runMeiroLiveCheck(this)">Run live check</button>
         <div class="live-result" id="meiro-live-result">Live checks run through Netlify Functions. The browser never receives the API token.</div>
-        <div class="cli-command">mpcli api GET /api/event-streams<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/event-types<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4/tracking-rules<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
         <div class="cli-note">If events are missing, confirm the source slug, source status, event types, tracking rules, queues, and URL allowlist for the Netlify origin.</div>
       </div>
     </div>
-    <div class="m-panel" id="mtab-cli">
-      <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Meiro Pipes CLI quickstart for this demo. Keep tokens in environment variables and never paste real token values into the page.</div>
+    <div class="m-panel" id="mtab-live">
+      <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Live Meiro Pipes checks run via Netlify Functions with the token kept server-side.</div>
       <div class="cli-card">
-        <div class="cli-title">Connect to workspace</div>
-        <div class="cli-command">export MPCLI_URL="https://sse-demo.eu1.pipes.meiro.io"<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">export MPCLI_TOKEN="mpat_..."<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli status<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-      </div>
-      <div class="cli-card">
-        <div class="cli-title">Inspect delivery and errors</div>
-        <div class="cli-command">mpcli api GET /api/event-deliveries<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/profile-deliveries<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/error-stats<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/error-logs<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-      </div>
-      <div class="cli-card">
-        <div class="cli-title">Tracking rules</div>
-        <div class="cli-copy">Rules can use page, click, formSubmit, input, and dataLayer triggers. Worker code should use sdk.track, sdk.getConfig, sdk.updateConfig, and sdk.resetIdentity.</div>
-        <div class="cli-command">mpcli api GET /tracking-rules/sse-website<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-        <div class="cli-command">mpcli api GET /api/event-streams/1f737c6b-4a4b-4302-a987-fcd8db1bf0f4/tracking-rules<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
-      </div>
-      <div class="cli-card">
-        <div class="cli-title">Live workspace check</div>
-        <div class="cli-copy">Latest validation: SSE Website source is enabled, recent events are arriving, queues are empty, and error stats show 0 errors in the last hour.</div>
+        <div class="cli-title">Workspace status</div>
+        <div class="cli-copy">Confirms token-backed API access, source status, recent events, queues, and errors.</div>
         <button class="live-check-btn" onclick="runMeiroLiveCheck(this)">Run live check</button>
-        <div class="live-result" id="meiro-cli-live-result">Not checked from this browser yet.</div>
-        <div class="cli-command">mpcli api GET /api/health/heartbeat<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>
+        <div class="live-result" id="meiro-live-tab-result">Not checked from this browser yet.</div>
+      </div>
+      <div class="cli-card">
+        <div class="cli-title">Active profile</div>
+        <div class="cli-copy">Looks up the currently selected demo user and shows stitched identifiers returned by Meiro.</div>
+        <button class="live-check-btn" onclick="lookupActiveMeiroProfile(this)">Lookup active profile</button>
+        <div class="live-result" id="meiro-live-profile-result">Not checked from this browser yet.</div>
       </div>
     </div>
   </aside>
@@ -2173,29 +2126,15 @@
       renderProfileCliGuide();
     }
 
-    function renderCliCommand(command) {
-      return `<div class="cli-command">${escapeHtml(command)}<button class="cli-copy-btn" title="Copy command" onclick="copyMeiroCommandFrom(this)">cp</button></div>`;
-    }
-
     function renderProfileCliGuide() {
       const profileCliLog = document.getElementById("profile-cli-log");
       if (!profileCliLog) return;
-      const email = currentCustomer ? currentCustomer.email : "customer@example.sk";
-      const userId = currentCustomer ? currentCustomer.id : "eff170a6-a999-48f2-a186-4f25d616f258";
-      const commands = [
-        `mpcli api GET "/api/profiles/search-everywhere?query=${email}"`,
-        `mpcli api GET "/api/profiles/search-everywhere?query=${userId}"`,
-        "mpcli api GET /api/profiles/search-cache/{cacheId}",
-        "mpcli api GET /api/profiles/{profileId}",
-        "mpcli api GET /api/profiles/{profileId}/audiences"
-      ];
       profileCliLog.innerHTML = `
         <div class="cli-card">
           <div class="cli-title">Profile lookup</div>
-          <div class="cli-copy">Use search-everywhere to get the live profileId/cacheId, then fetch profile details and audiences for the active demo account.</div>
+          <div class="cli-copy">Looks up the selected demo user through the Netlify proxy and verifies stitched identifiers in Meiro.</div>
           <button class="live-check-btn" onclick="lookupActiveMeiroProfile(this)">Lookup active profile</button>
           <div class="live-result" id="meiro-profile-live-result">Not checked from this browser yet.</div>
-          ${commands.map(renderCliCommand).join("")}
           <div class="cli-note">The browser identifier and payload user_id are intentionally the same UUID for each simulated user.</div>
         </div>
       `;
@@ -2235,18 +2174,21 @@
       const original = button.textContent;
       button.disabled = true;
       button.textContent = "Checking...";
+      setLiveResult("meiro-events-live-result", "Calling Netlify Function...");
       setLiveResult("meiro-live-result", "Calling Netlify Function...");
-      setLiveResult("meiro-cli-live-result", "Calling Netlify Function...");
+      setLiveResult("meiro-live-tab-result", "Calling Netlify Function...");
       try {
         const data = await fetchMeiroFunction("/.netlify/functions/meiro-pipes-status");
         const html = renderLiveStatus(data);
+        setLiveResult("meiro-events-live-result", html);
         setLiveResult("meiro-live-result", html);
-        setLiveResult("meiro-cli-live-result", html);
+        setLiveResult("meiro-live-tab-result", html);
         showToast("Live Meiro Pipes check completed.");
       } catch (err) {
         const html = `<strong>Live check failed.</strong><br>${escapeHtml(err.message)}<br>Confirm Netlify env vars and redeploy.`;
+        setLiveResult("meiro-events-live-result", html);
         setLiveResult("meiro-live-result", html);
-        setLiveResult("meiro-cli-live-result", html);
+        setLiveResult("meiro-live-tab-result", html);
         showToast("Live Meiro check failed.");
       } finally {
         button.disabled = false;
@@ -2270,26 +2212,16 @@
           ? `<strong>Profile found</strong><br>profileId: ${escapeHtml(result.profileId)}<br>${matches}`
           : `<strong>No profile found.</strong><br>${escapeHtml(target)}`;
         setLiveResult("meiro-profile-live-result", html);
+        setLiveResult("meiro-live-profile-result", html);
         showToast(result ? "Live profile lookup completed." : "No live profile found.");
       } catch (err) {
-        setLiveResult("meiro-profile-live-result", `<strong>Profile lookup failed.</strong><br>${escapeHtml(err.message)}`);
+        const html = `<strong>Profile lookup failed.</strong><br>${escapeHtml(err.message)}`;
+        setLiveResult("meiro-profile-live-result", html);
+        setLiveResult("meiro-live-profile-result", html);
         showToast("Live profile lookup failed.");
       } finally {
         button.disabled = false;
         button.textContent = original;
-      }
-    }
-
-    function copyMeiroCommandFrom(button) {
-      const command = (button.parentElement.childNodes[0].nodeValue || "").trim();
-      if (!command) return;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(command).then(
-          () => showToast("Meiro CLI command copied."),
-          () => showToast(command)
-        );
-      } else {
-        showToast(command);
       }
     }
 
