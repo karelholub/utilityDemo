@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StredEnergia | Energia, eZona a sluzby pre zakaznikov</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23075f9d'/%3E%3Cpath d='M20 40c0-13 10-23 23-23' fill='none' stroke='%2362b947' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M19 42c7-9 17-14 29-14' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
@@ -1830,7 +1831,7 @@
       "Strucne opiste, co potrebujete vybavit.": "Briefly describe what you need to handle."
     };
 
-    function tr(text) {
+    function translateText(text) {
       if (currentLang === "sk") return text;
       return en[text] || text;
     }
@@ -1864,7 +1865,7 @@
         const leading = source.match(/^\s*/)[0];
         const trailing = source.match(/\s*$/)[0];
         const core = source.trim();
-        node.nodeValue = leading + tr(core) + trailing;
+        node.nodeValue = leading + translateText(core) + trailing;
       });
 
       document.querySelectorAll("[placeholder], [title], [aria-label]").forEach(el => {
@@ -2297,7 +2298,7 @@
 
     function showToast(message) {
       const toast = document.getElementById("toast");
-      toast.textContent = tr(message);
+      toast.textContent = translateText(message);
       toast.classList.add("show");
       clearTimeout(showToast.timer);
       showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
