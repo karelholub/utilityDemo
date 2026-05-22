@@ -2014,13 +2014,14 @@
         case "article_opened":
           return ["select_content", { content_type: "article", item_id: p.article }];
         case "newsletter_subscribed":
-          return ["sign_up", { method: "newsletter" }];
+          return ["sign_up", { method: "newsletter", email: p.email }];
         case "lead_form_submitted":
           return ["form_submit", {
             form_id: "energy_consultation_lead",
             first_name: p.first_name,
             last_name: p.last_name,
             email: p.email,
+            phone: p.phone,
             phone_number: p.phone,
             field00: p.marketing_consent,
             field01: p.interest,
@@ -2032,6 +2033,7 @@
             first_name: p.first_name,
             last_name: p.last_name,
             email: p.email,
+            phone: p.phone,
             phone_number: p.phone,
             field00: p.marketing_consent,
             field01: p.interest,
@@ -2049,7 +2051,13 @@
         case "payment_completed":
           return ["purchase", { transaction_id: "PAY" + Date.now(), currency: "EUR", value: p.amount || 0, items: [{ item_id: "utility_payment", item_name: "Utility payment", price: p.amount || 0 }] }];
         case "meter_reading_submitted":
-          return ["form_submit", { form_id: "meter_reading", form_name: "Meter reading" }];
+          return ["form_submit", {
+            form_id: "meter_reading",
+            form_name: "Meter reading",
+            field00: p.contract,
+            field01: p.place,
+            field02: p.value
+          }];
         case "recommendation_clicked":
           return ["select_promotion", { promotion_id: p.recommendation || "recommendation", promotion_name: "Portal recommendation" }];
         default:
@@ -2059,8 +2067,11 @@
 
     function trackEvent(name, props) {
       const [canonical, payload] = buildMptEvent(name, props || {});
-      if (currentCustomer && loginTime && canonical !== "page_view" && canonical !== "form_submit") {
+      if (currentCustomer && loginTime && canonical !== "page_view") {
         payload.user_id = currentCustomer.id;
+        payload.email = payload.email || currentCustomer.email;
+        payload.segment = payload.segment || currentCustomer.segment;
+        payload.contract_id = payload.contract_id || currentCustomer.contract;
       }
       console.log("[Meiro SSE Demo]", canonical, "(" + name + ")", payload);
       try {
@@ -2484,7 +2495,7 @@
     function subscribeNewsletter(event) {
       event.preventDefault();
       const email = document.getElementById("newsletter-email").value;
-      trackEvent("newsletter_subscribed", { email_domain: email.split("@")[1] || "unknown" });
+      trackEvent("newsletter_subscribed", { email, email_domain: email.split("@")[1] || "unknown" });
       document.getElementById("newsletter-email").value = "";
       showToast("Dakujeme za prihlasenie k novinkam.");
     }
