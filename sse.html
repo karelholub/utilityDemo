@@ -188,17 +188,20 @@
       color: white;
       box-shadow: 0 12px 24px rgba(19,131,67,.22);
     }
+    .btn-primary:hover { box-shadow: 0 16px 30px rgba(19,131,67,.30); }
     .btn-blue {
       background: var(--blue-800);
       color: white;
       box-shadow: 0 12px 24px rgba(7,95,157,.20);
     }
+    .btn-blue:hover { box-shadow: 0 16px 30px rgba(7,95,157,.28); }
     .btn-outline {
       background: #fff;
       color: var(--blue-800);
       border: 1.5px solid #b6d7ee;
       box-shadow: 0 10px 22px rgba(6,52,92,.08);
     }
+    .btn-outline:hover { background: #f7fbff; border-color: #8fc4e8; }
     .btn-quiet {
       background: #edf5fb;
       color: var(--blue-800);
@@ -215,12 +218,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .icon-btn:hover {
+      border-color: #b6d7ee;
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
     }
 
     .hero {
       position: relative;
       padding: 0;
-      min-height: 610px;
+      min-height: 590px;
       overflow: hidden;
       color: #fff;
       background:
@@ -238,12 +247,12 @@
     .hero .container {
       position: relative;
       z-index: 1;
-      min-height: 610px;
+      min-height: 590px;
       display: grid;
       grid-template-columns: minmax(0, 720px) minmax(300px, 1fr);
       gap: 32px;
       align-items: center;
-      padding: 42px 0 64px;
+      padding: 30px 0 52px;
     }
     .segment-switch {
       display: inline-flex;
@@ -278,7 +287,7 @@
     }
     h1 {
       margin: 0;
-      font-size: clamp(38px, 4.8vw, 56px);
+      font-size: clamp(38px, 4.6vw, 54px);
       line-height: 1.03;
       letter-spacing: 0;
       max-width: 720px;
@@ -292,7 +301,7 @@
     }
     .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .hero-proof {
-      margin-top: 26px;
+      margin-top: 22px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
@@ -302,7 +311,7 @@
       background: rgba(255,255,255,.14);
       border: 1px solid rgba(255,255,255,.22);
       border-radius: 8px;
-      padding: 13px;
+      padding: 11px;
       backdrop-filter: blur(12px);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
     }
@@ -659,12 +668,12 @@
     .newsletter-shell:after {
       content: "";
       position: absolute;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      right: -90px;
-      top: -90px;
-      border: 40px solid rgba(255,255,255,.08);
+      width: 360px;
+      height: 120px;
+      right: -110px;
+      top: -22px;
+      background: linear-gradient(90deg, rgba(255,255,255,.14), rgba(255,255,255,.02));
+      transform: rotate(-18deg);
     }
     .newsletter h2 { color: #fff; font-size: 28px; }
     .newsletter p { margin: 8px 0 0; color: rgba(255,255,255,.76); }
@@ -684,8 +693,14 @@
       padding: 0 14px;
       width: 260px;
       outline: none;
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
     }
     .newsletter-form input::placeholder { color: rgba(255,255,255,.70); }
+    .newsletter-form input:hover { background: rgba(255,255,255,.18); }
+    .newsletter-form input:focus {
+      border-color: rgba(255,255,255,.76);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.16);
+    }
 
     .site-footer {
       background: #082743;
@@ -724,6 +739,7 @@
       min-height: 70px;
       display: flex;
       align-items: center;
+      box-shadow: 0 14px 34px rgba(6,52,92,.16);
     }
     .portal-topbar .container {
       display: flex;
@@ -761,8 +777,10 @@
       gap: 10px;
       padding: 0 12px;
       text-align: left;
+      transition: background .16s ease, color .16s ease, transform .16s ease;
     }
     .portal-nav-btn.active, .portal-nav-btn:hover { background: #eef8ed; color: var(--green-700); }
+    .portal-nav-btn:hover { transform: translateX(2px); }
     .portal-main { display: grid; gap: 18px; }
     .portal-section { display: none; }
     .portal-section.active { display: grid; gap: 18px; }
@@ -776,6 +794,7 @@
       align-items: center;
       gap: 20px;
       box-shadow: var(--shadow-sm);
+      flex-wrap: wrap;
     }
     .portal-hero h1 {
       color: var(--blue-950);
@@ -872,6 +891,15 @@
       width: 100%;
       transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
     }
+    .field select {
+      appearance: none;
+      padding-right: 40px;
+      background:
+        linear-gradient(45deg, transparent 50%, var(--blue-800) 50%) right 18px center / 7px 7px no-repeat,
+        linear-gradient(135deg, var(--blue-800) 50%, transparent 50%) right 12px center / 7px 7px no-repeat,
+        #fff;
+    }
+    .field input::placeholder, .field textarea::placeholder { color: #9aacbd; }
     .field textarea {
       min-height: 112px;
       padding: 12px 14px;
@@ -1042,6 +1070,7 @@
       .portal-sidebar { position: static; display: grid; grid-template-columns: repeat(2,1fr); }
       .newsletter-shell { grid-template-columns: 1fr; }
       .lead-shell { grid-template-columns: 1fr; }
+      .portal-hero { align-items: flex-start; }
     }
     @media (max-width: 680px) {
       .container { width: min(100% - 24px, 1180px); }
@@ -1065,10 +1094,28 @@
       .newsletter-form { flex-direction: column; }
       .newsletter-form input { width: 100%; }
       .lead-fields { grid-template-columns: 1fr; }
+      .portal-topbar { min-height: auto; padding: 10px 0; }
+      .portal-topbar .container { align-items: flex-start; flex-direction: column; gap: 12px; }
+      .portal-topbar .btn { width: 100%; }
+      .portal-shell { padding: 18px 0 42px; }
       .portal-sidebar { grid-template-columns: 1fr; }
+      .portal-nav-btn:hover { transform: none; }
+      .portal-hero { flex-direction: column; padding: 20px; }
+      .portal-hero .btn { width: 100%; }
+      .portal-hero h1 { font-size: 26px; }
       .table-card { overflow-x: auto; }
       .table-row { min-width: 760px; }
       .hero-actions .btn { width: 100%; }
+      .meiro-toggle.open { right: min(380px, calc(100vw - 42px)); }
+      .meiro-panel { width: min(380px, calc(100vw - 42px)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *:before, *:after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
     }
   </style>
 </head>
